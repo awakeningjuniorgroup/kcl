@@ -172,6 +172,3 @@ const initializeServer = async () => {
 initializeServer();
 
 export default app;
-export const config = {
-  runtime: "nodejs22.x"
-};
