@@ -44,7 +44,8 @@ const httpServer = createServer(app);
 const allowedOrigins = [
   process.env.VITE_BACKEND_URL,
   process.env.FRONTEND_URL,
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "https://horizon-business-1.onrender.com/"
 ].filter(Boolean);
 
 // Configuration Socket.io (Désactivé sur Vercel car non supporté en Serverless)
