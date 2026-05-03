@@ -1,14 +1,16 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
-  "runtime": "nodejs22.x",
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node",
+      "config": { "runtime": "nodejs18.x" }
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/server.js"
+      "dest": "server.js"
     }
   ]
 }
