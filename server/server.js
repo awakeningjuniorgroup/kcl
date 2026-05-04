@@ -47,16 +47,22 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Autorise les requêtes sans origine (comme les outils de test ou apps mobiles)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('CORS Policy: Origin not allowed'), false);
     }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  // 🟢 AJOUT : "token" doit être ici pour autoriser ton header personnalisé
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "token"]
+  // 🟢 CRUCIAL : Autoriser explicitement votre header personnalisé "token"
+  allowedHeaders: [
+    "Content-Type", 
+    "Authorization", 
+    "X-Requested-With", 
+    "token"
+  ]
 }));
 
 // ==========================================
