@@ -3,30 +3,36 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Sparkles, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppContext } from '../context/AppContext';
+import Image1 from '../assets/image1.jpeg'
+import Image2 from '../assets/image2.jpeg'
+import Image3 from '../assets/image3.jpeg'
+
+
 
 const FALLBACK_SLIDES = [
   {
     _id: "fallback-1",
-    title: "Fresh & Organic",
-    subtitle: "Farm-to-table goodness delivered to your doorstep.",
-    badge: "🌿 SPRING COLLECTION",
-    image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800",
+    title: "Mobilier Moderne",
+    subtitle: "Des meubles élégants et fonctionnels pour chaque espace de votre maison.",
+    badge: "🛋️ NOUVELLE COLLECTION",
+    image: Image1,
   },
   {
     _id: "fallback-2",
-    title: "Weekly Specials",
-    subtitle: "Save up to 40% on your favorite organic fruits.",
-    badge: "🔥 HOT DEALS",
-    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800",
+    title: "Offres Électroniques",
+    subtitle: "Profitez de réductions sur les téléviseurs, smartphones, ordinateurs et plus encore.",
+    badge: "⚡ PROMOS DU MOMENT",
+    image: Image2,
   },
   {
     _id: "fallback-3",
-    title: "Premium Quality",
-    subtitle: "Handpicked selections from trusted local farms.",
-    badge: "⭐ BESTSELLERS",
-    image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800",
+    title: "Qualité Premium",
+    subtitle: "Des produits fiables, durables et sélectionnés parmi les meilleures marques.",
+    badge: "⭐ MEILLEURS CHOIX",
+    image: Image3,
   },
-];
+]
+
 
 const GRADIENT_PALETTE = [
   "from-emerald-50 via-green-50 to-lime-50",
