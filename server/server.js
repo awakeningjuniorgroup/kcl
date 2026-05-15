@@ -238,4 +238,4 @@ const initializeServer = async () => {
 
 initializeServer();
 
-module.exports = app;
+export default  app;
