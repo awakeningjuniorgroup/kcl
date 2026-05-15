@@ -250,7 +250,7 @@ const ActiveDeliveryMap = ({
           <Truck size={40} className="text-green-500" />
         </div>
         <h2 className="text-xl font-black text-gray-800 tracking-wide">
-          Connecting to GPS...
+          Connection au GPS...
         </h2>
         <p className="text-gray-400 font-medium mt-2">Setting up your route</p>
       </div>
