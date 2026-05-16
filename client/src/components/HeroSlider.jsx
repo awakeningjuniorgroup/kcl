@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Sparkles, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppContext } from '../context/AppContext';
-import Image1 from '../assets/image1.jpeg'
-import Image2 from '../assets/image2.jpeg'
-import Image3 from '../assets/image3.jpeg'
-
-
+import Image1 from '../assets/image1.jpeg';
+import Image2 from '../assets/image2.jpeg';
+import Image3 from '../assets/image3.jpeg';
 
 const FALLBACK_SLIDES = [
   {
@@ -31,8 +29,7 @@ const FALLBACK_SLIDES = [
     badge: "⭐ MEILLEURS CHOIX",
     image: Image1,
   },
-]
-
+];
 
 const GRADIENT_PALETTE = [
   "from-emerald-50 via-green-50 to-lime-50",
@@ -97,7 +94,7 @@ const HeroSlider = () => {
 
   if (loading) {
     return (
-      <div className="relative w-full h-[500px] md:h-[650px] bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse flex items-center justify-center rounded-b-[3rem] overflow-hidden">
+      <div className="relative w-full h-[550px] md:h-[650px] bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse flex items-center justify-center rounded-b-[3rem] overflow-hidden">
         <motion.div 
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 1.5, repeat: Infinity }}
@@ -112,7 +109,7 @@ const HeroSlider = () => {
 
   return (
     <div 
-      className="relative w-full h-[500px] md:h-[650px] overflow-hidden rounded-b-[2.5rem]"
+      className="relative w-full h-[580px] sm:h-[600px] md:h-[650px] overflow-hidden rounded-b-[2.5rem]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -127,7 +124,7 @@ const HeroSlider = () => {
           transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.4 } }}
           className={`absolute inset-0 w-full h-full bg-gradient-to-br ${activeGradient}`}
         >
-          {/* Animated Background Elements */}
+          {/* Background Elements */}
           <motion.div 
             animate={{ rotate: 360 }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -139,24 +136,24 @@ const HeroSlider = () => {
             className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -ml-40 -mb-40"
           />
 
-          <div className="container mx-auto px-6 md:px-16 h-full flex flex-col md:flex-row items-center justify-between relative z-10">
+          <div className="container mx-auto px-6 md:px-16 h-full flex flex-col md:flex-row items-center justify-center md:justify-between gap-6 md:gap-0 relative z-10 py-8 md:py-0">
             
             {/* Text Content */}
-            <div className="flex-1 text-center md:text-left mt-16 md:mt-0 max-w-xl">
+            <div className="text-center md:text-left max-w-xl order-2 md:order-1 flex flex-col items-center md:items-start">
               <motion.div 
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.1 }}
-                className="inline-flex items-center gap-2 py-2 px-4 rounded-full bg-white/90 backdrop-blur-md text-emerald-700 text-sm font-bold shadow-lg border border-white/50"
+                className="inline-flex items-center gap-2 py-1.5 px-3.5 rounded-full bg-white/90 backdrop-blur-md text-emerald-700 text-xs md:text-sm font-bold shadow-lg border border-white/50"
               >
-                <Sparkles className="w-4 h-4" /> {activeSlide.badge || "FEATURED"}
+                <Sparkles className="w-3.5 h-3.5" /> {activeSlide.badge || "FEATURED"}
               </motion.div>
               
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-5xl md:text-7xl font-black text-gray-900 leading-tight mt-6 mb-4 tracking-tight"
+                className="text-3xl sm:text-4xl md:text-7xl font-black text-gray-900 leading-tight mt-3 mb-2 md:mt-6 md:mb-4 tracking-tight"
               >
                 {activeSlide.title}
               </motion.h1>
@@ -165,7 +162,7 @@ const HeroSlider = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-lg md:text-xl text-gray-700 mb-8 font-medium leading-relaxed"
+                className="text-sm sm:text-base md:text-xl text-gray-700 mb-4 md:mb-8 font-medium leading-relaxed max-w-sm sm:max-w-md md:max-w-none"
               >
                 {activeSlide.subtitle}
               </motion.p>
@@ -174,35 +171,35 @@ const HeroSlider = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+                className="w-full sm:w-auto"
               >
                 <Link 
                   to="/products"
-                  className="group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#3d618c] to-[#4A76AC] hover:from-[#4A76AC]hover:to-[#3d618c] text-white px-10 py-4 rounded-full font-bold shadow-xl shadow-emerald-600/30 hover:shadow-emerald-600/50 transition-all hover:scale-105 overflow-hidden"
+                  className="group relative inline-flex w-full sm:w-auto items-center justify-center gap-2 bg-gradient-to-r from-[#3d618c] to-[#4A76AC] hover:from-[#4A76AC] hover:to-[#3d618c] text-white px-8 md:px-10 py-3 md:py-4 rounded-full font-bold shadow-xl transition-all hover:scale-105 overflow-hidden"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Acheter maintenant <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <span className="relative z-10 flex items-center gap-2 text-sm md:text-base">
+                    Acheter maintenant <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
                 </Link>
               </motion.div>
             </div>
 
-            {/* Image */}
+            {/* Image Container */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="flex-1 flex justify-center md:justify-end mt-8 md:mt-0 relative"
+              className="flex justify-center md:justify-end order-1 md:order-2 mt-4 md:mt-0"
             >
               <motion.div
-                animate={{ y: [0, -20, 0] }}
+                animate={{ y: [0, -12, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <img 
                   src={activeSlide.image} 
                   alt="Hero Banner" 
-                  className="relative w-[280px] md:w-[450px] h-[280px] md:h-[450px] object-cover rounded-full shadow-2xl border-8 border-white/60 backdrop-blur-sm hover:scale-105 transition-transform duration-500" 
+                  className="w-[180px] h-[180px] sm:w-[240px] sm:h-[240px] md:w-[430px] md:h-[430px] lg:w-[450px] lg:h-[450px] object-cover rounded-full shadow-2xl border-4 md:border-8 border-white/60 backdrop-blur-sm hover:scale-105 transition-transform duration-500" 
                 />
               </motion.div>
             </motion.div>
@@ -210,38 +207,36 @@ const HeroSlider = () => {
         </motion.div>
       </AnimatePresence>
       
-      {/* Navigation */}
+      {/* Navigation controls */}
       {slides.length > 1 && (
         <>
-          {/* Arrows */}
           <motion.button 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={prevSlide}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur hover:bg-white text-gray-800 p-3 md:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all"
+            className="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur hover:bg-white text-gray-800 p-2.5 md:p-4 rounded-full shadow-xl transition-all"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={20} md={24} />
           </motion.button>
           <motion.button 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={nextSlide}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur hover:bg-white text-gray-800 p-3 md:p-4 rounded-full shadow-xl hover:shadow-2xl transition-all"
+            className="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur hover:bg-white text-gray-800 p-2.5 md:p-4 rounded-full shadow-xl transition-all"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={20} md={24} />
           </motion.button>
 
           {/* Dots */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
             {slides.map((_, index) => (
-              <motion.button
+              <button
                 key={index}
                 onClick={() => {
                   setDirection(index > current ? 1 : -1);
                   setCurrent(index);
                 }}
-                className={`rounded-full transition-all ${index === current ? 'bg-emerald-600 w-8' : 'bg-white/50 w-2.5 hover:bg-white/80'} h-2.5`}
-                whileHover={{ scale: 1.2 }}
+                className={`rounded-full transition-all ${index === current ? 'bg-emerald-600 w-6' : 'bg-white/50 w-2 hover:bg-white/80'} h-2`}
               />
             ))}
           </div>
