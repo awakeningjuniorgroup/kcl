@@ -15,21 +15,21 @@ const FALLBACK_SLIDES = [
     title: "Mobilier Moderne",
     subtitle: "Des meubles élégants et fonctionnels pour chaque espace de votre maison.",
     badge: "🛋️ NOUVELLE COLLECTION",
-    image: Image1,
+    image: Image2,
   },
   {
     _id: "fallback-2",
     title: "Offres Électroniques",
     subtitle: "Profitez de réductions sur les téléviseurs, smartphones, ordinateurs et plus encore.",
     badge: "⚡ PROMOS DU MOMENT",
-    image: Image2,
+    image: Image3,
   },
   {
     _id: "fallback-3",
     title: "Qualité Premium",
     subtitle: "Des produits fiables, durables et sélectionnés parmi les meilleures marques.",
     badge: "⭐ MEILLEURS CHOIX",
-    image: Image3,
+    image: Image1,
   },
 ]
 
