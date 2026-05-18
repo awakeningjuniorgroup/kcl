@@ -155,7 +155,7 @@ const ZoomIntro = () => {
         {/* Logo */}
         <div ref={logoRef} className="will-change-transform">
           <h1 className="text-white text-6xl md:text-8xl font-black drop-shadow-2xl tracking-tighter">
-            KCL
+            KCL: <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#4A76AC]  to-[#3d618c] drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">Tout à petit prix</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#4A76AC]  to-[#3d618c] drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
               Tout à petit prix
             </span>
