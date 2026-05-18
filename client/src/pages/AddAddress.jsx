@@ -184,8 +184,8 @@ const AddAddress = () => {
           <div className="w-full lg:w-[45%] bg-slate-50 p-6 lg:p-8 flex flex-col border-r border-slate-100 relative">
             {/* Service Area Banner */}
             <div className="absolute top-0 left-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-widest text-center py-1.5 flex items-center justify-center gap-1.5 z-10">
-              <AlertCircle size={12} /> Enregistrement des services d'horizon
-              business
+              <AlertCircle size={12} /> Enregistrement des services kcl
+              
             </div>
 
             <div className="mb-6 mt-4">

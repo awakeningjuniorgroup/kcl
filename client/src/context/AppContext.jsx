@@ -21,8 +21,8 @@ export const AppContextProvider = ({ children }) => {
   const language = "fr"; // French
   const navigate = useNavigate();
   const backendUrl =
-    import.meta.env.VITE_BACKEND_URL ||
-     "https://horizon-business.onrender.com";
+    import.meta.env.VITE_BACKEND_URL 
+     
   const { isSignedIn, user: clerkUser, isLoaded: clerkLoaded } = useUser();
   const { signOut: clerkSignOut } = useClerk();
 

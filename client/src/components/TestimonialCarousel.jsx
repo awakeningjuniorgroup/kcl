@@ -94,7 +94,7 @@ const TestimonialCarousel = () => {
           transition={{ delay: 0.2 }}
           className="text-gray-600 max-w-xl mx-auto font-medium"
         >
-           Histoire vrai des clients de chaque jour qui transforment leurs experiences d'achat chez horizon buisiness.
+           Histoire vrai des clients de chaque jour qui transforment leurs experiences d'achat chez kcl.
         </motion.p>
       </div>
 

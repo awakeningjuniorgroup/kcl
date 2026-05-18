@@ -133,7 +133,7 @@ const Collection = () => {
               <span className="font-bold text-gray-900">
                 {filterProducts.length}
               </span>{" "}
-              article
+              articles
             </p>
           </div>
           <div className="relative w-full md:w-auto">

@@ -9,7 +9,7 @@ const resetAndCreateSuperAdminWithClerk = async () => {
     
     // 1. Connect to MongoDB
     console.log('1️⃣ Connecting to MongoDB...');
-    const mongoURI = "mongodb+srv://awakeningjuniorgroup_db_user:2NkBb67AOJLdvbFS@kuakumarket.0qyzfx1.mongodb.net/?appName=kuakumarket";
+    const mongoURI = process.env.MONGO_URI ;
     await mongoose.connect(mongoURI);
     console.log('✅ MongoDB Connected!\n');
 

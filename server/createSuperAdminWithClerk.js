@@ -10,7 +10,7 @@ const createSuperAdminWithClerk = async () => {
     
     // 1. Connect to MongoDB
     console.log('1️⃣ Connecting to MongoDB...');
-    const mongoURI = "mongodb+srv://awakeningjuniorgroup_db_user:2NkBb67AOJLdvbFS@kuakumarket.0qyzfx1.mongodb.net/?appName=kuakumarket";
+    const mongoURI = process.env.MONGO_URI;
     await mongoose.connect(mongoURI);
     console.log('✅ MongoDB Connected!\n');
 
@@ -89,7 +89,7 @@ const createSuperAdminWithClerk = async () => {
     console.log('4️⃣ Creating Super Admin in MongoDB...');
     const superAdmin = new User({
       clerkId: clerkUserId,
-      name: 'Parth Shah',
+      name: 'awakening junior group',
       email: 'awakeningjuniorgroup@gmail.com',
       password: '@pa12!&Ter',
       role: 'superadmin',

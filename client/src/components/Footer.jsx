@@ -22,7 +22,7 @@ const Footer = () => {
             <img
               className="w-36 mb-6 object-contain"
               src={assets.logo}
-              alt="horizon shop"
+              alt="kcl"
             />
             <p className="text-slate-500 text-sm leading-relaxed mb-8 font-medium">
               Platforme de vente et livraison de nouvelle génération de produits
@@ -113,7 +113,7 @@ const Footer = () => {
                   />
                 </div>
                 <span className="mt-1.5 group-hover:text-emerald-600 transition-colors">
-                  contact@horizonshop.com
+                  contact@kcl.com
                 </span>
               </li>
               <li className="flex items-start gap-3 text-slate-500 text-sm font-medium group cursor-pointer">
@@ -135,7 +135,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-500 text-sm font-medium text-center md:text-left">
             © {new Date().getFullYear()}{" "}
-            <span className="font-black text-slate-800">horizon shop</span>.
+            <span className="font-black text-slate-800">kcl</span>.
             Tous droits réservés.
           </p>
 
@@ -149,7 +149,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-emerald-600 font-black hover:text-emerald-700 transition-colors"
               >
-                horizon shop
+                kcl
               </a>
             </div>
           }

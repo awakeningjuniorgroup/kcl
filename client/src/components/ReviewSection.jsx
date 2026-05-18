@@ -58,7 +58,7 @@ const ReviewSection = ({ productId, reviews = [] }) => {
             <div className="py-6 text-sm text-gray-600 leading-relaxed">
                 {activeTab === 'desc' ? (
                     <p>
-                        Horizon shop offre une gamme de produits de qualité, soigneusement sélectionnés pour répondre à vos besoins quotidiens. 
+                        kcl offre une gamme de produits de qualité, soigneusement sélectionnés pour répondre à vos besoins quotidiens. 
                         Notre engagement envers la satisfaction du client nous distingue, faisant de nous votre destination de confiance pour des achats en ligne pratiques et fiables.
                     </p>
                 ) : (

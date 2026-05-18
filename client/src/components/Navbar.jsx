@@ -233,7 +233,7 @@ const Navbar = () => {
           <img
             className="h-8 md:h-10 w-auto object-contain transition-transform duration-300 active:scale-95"
             src={assets.logo}
-            alt="horizon shop"
+            alt="kcl"
           />
         </div>
 

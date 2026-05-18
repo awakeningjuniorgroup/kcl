@@ -908,7 +908,7 @@ const Cart = () => {
 
             {totalAmount > MAX_ORDER_AMOUNT && (
               <p className="text-red-500 text-xs font-bold mt-3 text-center bg-red-50 p-2.5 rounded-xl border border-red-100">
-                Aucune limitte de commande
+                Aucune limite de commande
               </p>
             )}
           </div>

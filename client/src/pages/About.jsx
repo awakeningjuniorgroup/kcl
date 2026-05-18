@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// 🚀 horizon shopizon shop JOURNEY
+// 🚀  kcl JOURNEY
 // Couleurs : Bleu Logo (#4A76AC), Fond Blanc (#FFFFFF), Texte Slate (#1e293b)
 const journeySteps = [
   {
@@ -42,10 +42,10 @@ const journeySteps = [
     id: 3,
     title: "Tests & Préparation",
     description:
-      "Chaque produit horizon shop est rigoureusement testé par nos experts avant d'être emballé dans un packaging protecteur haute densité.",
+      "Chaque produit venant de chez kcl est rigoureusement testé par nos experts avant d'être emballé dans un packaging protecteur haute densité.",
     icon: <PackageCheck size={32} style={{ color: "#4A76AC" }} />,
     color: "bg-blue-50",
-    role: "HORIZON HQ",
+    role: "KCL HQ",
   },
   {
     id: 4,
@@ -69,7 +69,7 @@ const journeySteps = [
     id: 6,
     title: "Déballez le Futur",
     description:
-      "Réceptionnez votre commande, vérifiez l'intégrité de vos produits et profitez de la garantie horizon shopizon shop. Votre mise à niveau commence ici.",
+      "Réceptionnez votre commande, vérifiez l'intégrité de vos produits et profitez de la garantie kcl. Votre mise à niveau commence ici.",
     icon: <Cpu size={32} style={{ color: "#4A76AC" }} />,
     color: "bg-blue-50",
     role: "CLIENT",
@@ -127,7 +127,7 @@ const About = () => {
 
           <h1 className="text-6xl md:text-8xl font-black text-slate-900 tracking-tight leading-[1.1]">
             Propulsez vous sur <br />
-            <span style={{ color: "#4A76AC" }}>horizon  shop</span>
+            <span style={{ color: "#4A76AC" }}>kcl</span>
           </h1>
 
           <p className="mt-6 text-lg md:text-2xl text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
@@ -263,7 +263,7 @@ const About = () => {
             <span style={{ color: "#4A76AC" }}>Niveau Supérieur ?</span>
           </h2>
           <p className="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light">
-            Rejoignez horizon shop. Profitez des dernières innovations avec une
+            Rejoignez kcl. Profitez des dernières innovations avec une
             garantie certifiée et un support client expert.
           </p>
 

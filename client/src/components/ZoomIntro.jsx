@@ -155,9 +155,9 @@ const ZoomIntro = () => {
         {/* Logo */}
         <div ref={logoRef} className="will-change-transform">
           <h1 className="text-white text-6xl md:text-8xl font-black drop-shadow-2xl tracking-tighter">
-            HORIZON
+            KCL
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#4A76AC]  to-[#3d618c] drop-shadow-[0_0_20px_rgba(34,197,94,0.4)]">
-              shop
+              Tout à petit prix
             </span>
           </h1>
         </div>
@@ -170,7 +170,7 @@ const ZoomIntro = () => {
 
             <Sparkles size={16} className="text-[#3d618c] animate-pulse" />
             <p className="text-slate-200 text-sm md:text-base font-medium tracking-wide">
-              Bienvenue chez horizon shop 
+              Bienvenue chez kcl! Votre expérience shopping commence ici.
             </p>
           </div>
         </div>
