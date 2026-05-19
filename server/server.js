@@ -44,7 +44,7 @@ const httpServer = createServer(app);
 // 🟢 FIX: CORRECTED allowed origins with proper commas
 const allowedOrigins = [
   "http://localhost:5173", 
-  "https://kcl-server.vercel.app",
+  "https://kcl-server.vercel.app/",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
