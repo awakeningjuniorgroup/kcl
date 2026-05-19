@@ -30,7 +30,7 @@ const PageLoader = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="fixed inset-0 z-[100000] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center m-0 w-full h-full"
+          className="fixed inset-0 z-100000 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center m-0 w-full h-full"
           role="status"
           aria-live="polite"
         >
@@ -40,7 +40,7 @@ const PageLoader = () => {
               scale: [1, 1.08, 1],
               filter: [
                 "brightness(1) drop-shadow(0px 0px 0px rgba(16,185,129,0))",
-                "brightness(1.15) drop-shadow(0px 15px 35px rgba(16,185,129,0.5))",
+                "brightness(1.15) drop-shadow(0px 15px 35px rgba(74, 118, 172, 0.5))",
                 "brightness(1) drop-shadow(0px 0px 0px rgba(16,185,129,0))",
               ],
             }}
@@ -50,8 +50,8 @@ const PageLoader = () => {
             {/* 🟢 Nudged 10px to the left using -translate-x-[10px] to fix image alignment */}
             <img
               src={fevicon}
-              alt="Kuaku Market Chargement"
-              className="w-32 md:w-44 h-auto object-contain block -translate-x-[10px]"
+              alt=" Chargement"
+              className="w-32 md:w-44 h-auto object-contain block -translate-x-2.5"
             />
           </motion.div>
 
@@ -59,15 +59,15 @@ const PageLoader = () => {
           <div className="flex flex-col items-center justify-center w-full gap-4">
             <div className="flex items-center justify-center gap-2.5">
               <span
-                className="w-2.5 h-2.5 bg-[#6FD3C1] rounded-full animate-bounce"
+                className="w-2.5 h-2.5 bg-[#4A76AC] rounded-full animate-bounce"
                 style={{ animationDelay: "0ms" }}
               ></span>
               <span
-                className="w-2.5 h-2.5 bg-[#6FD3C1] rounded-full animate-bounce"
+                className="w-2.5 h-2.5 bg-[#4A76AC] rounded-full animate-bounce"
                 style={{ animationDelay: "150ms" }}
               ></span>
               <span
-                className="w-2.5 h-2.5 bg-[#6FD3C1] rounded-full animate-bounce"
+                className="w-2.5 h-2.5 bg-[#4A76AC] rounded-full animate-bounce"
                 style={{ animationDelay: "300ms" }}
               ></span>
             </div>

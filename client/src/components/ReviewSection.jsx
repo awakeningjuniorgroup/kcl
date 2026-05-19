@@ -13,7 +13,7 @@ const ReviewSection = ({ productId, reviews = [] }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!token) return toast.error("Please login to write a review");
+        if (!token) return toast.error("veiller vous connecter pour donner votre appréciations");
         
         setIsSubmitting(true);
         try {

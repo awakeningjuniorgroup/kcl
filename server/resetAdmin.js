@@ -5,7 +5,7 @@ import User from './models/User.js';
 const resetAdmin = async () => {
   try {
     // 1. Connect
-    const mongoURI = "mongodb+srv://awakeningjuniorgroup_db_user:2NkBb67AOJLdvbFS@kuakumarket.0qyzfx1.mongodb.net/?appName=kuakumarket";
+    const mongoURI = process.env.MONGODB_URI; // <-- Change this if needed";
     console.log('🔌 Connecting...');
     await mongoose.connect(mongoURI);
     
@@ -19,7 +19,7 @@ const resetAdmin = async () => {
     const hashedPassword = await bcrypt.hash('Admin@321', salt); 
 
     const superAdmin = new User({
-      name: 'Parth Shah',
+      name: 'awakening junior group',
       email: 'awakeningjuniorgroup@gmail.com',
       password: hashedPassword,
       role: 'superadmin',

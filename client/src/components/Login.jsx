@@ -84,7 +84,7 @@ const Login = () => {
                             localization={{
                                 signIn: {
                                     start: {
-                                        title: 'Sign in to Mandvi Cart',
+                                        title: 'connectez-vous à votre compte kcl',
                                     }
                                 }
                             }}

@@ -6,28 +6,31 @@ import { BrowserRouter } from 'react-router-dom'
 import { AppContextProvider } from './context/AppContext.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key.")
+  throw new Error("Missing Publishable Key. Check your frontend .env file.")
 }
 
-// 🟢 ADD THIS BLOCK TO SILENCE THE CLERK WARNING
+// 🟢 SILENCE CLERK KEYS WARNING
 const originalWarn = console.warn;
 console.warn = (...args) => {
   if (typeof args[0] === 'string' && args[0].includes('Clerk has been loaded with development keys')) {
-    return; // Block the annoying Clerk warning
+    return; 
   }
-  originalWarn(...args); // Let all other warnings pass through
+  originalWarn(...args); 
 };
-// 🟢 END BLOCK
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+  <React.StrictMode>
     <BrowserRouter>
-      <AppContextProvider>
-        <App />
-      </AppContextProvider>
+      {/* 1. Clerk doit être TOUT EN HAUT pour fournir ses hooks à l'application */}
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+        {/* 2. AppContextProvider est maintenant ICI, il peut utiliser useClerk() et useUser() sans crash */}
+        <AppContextProvider>
+          <App />
+        </AppContextProvider>
+      </ClerkProvider>
     </BrowserRouter>
-  </ClerkProvider>,
+  </React.StrictMode>,
 )

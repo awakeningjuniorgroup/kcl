@@ -601,7 +601,7 @@ const Navbar = () => {
                 onClick={() => openSignIn()}
                 className="hidden sm:block cursor-pointer px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-bold text-sm shadow-md transition-all active:scale-95"
               >
-                Login
+                se connecter
               </button>
             </SignedOut>
 
@@ -703,8 +703,9 @@ const Navbar = () => {
                           {item.name}
                         </p>
                         <p className="text-[10px] font-black text-emerald-600">
-                          {currency}
+                          
                           {item.offerPrice}
+                          {currency}
                         </p>
                       </div>
                     </div>
@@ -772,7 +773,7 @@ const Navbar = () => {
                         isActive ? "text-emerald-500" : "text-slate-400"
                       }
                     />{" "}
-                    About us
+                    A propos
                   </>
                 )}
               </NavLink>
@@ -795,7 +796,7 @@ const Navbar = () => {
                             isActive ? "text-emerald-500" : "text-slate-400"
                           }
                         />{" "}
-                        Cart
+                        pannier
                       </div>
                       {getCartCount() > 0 && (
                         <span className="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full">

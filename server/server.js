@@ -191,7 +191,7 @@ const initializeServer = async () => {
 
     // Health check endpoint
     app.get("/", (req, res) => {
-      res.json({ success: true, message: "🌿 Horizon API is active." });
+      res.status(200).json({ success: true, message: "🌿 Horizon API is active." });
     });
 
     // Test CORS endpoint (for debugging)

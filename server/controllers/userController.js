@@ -15,7 +15,7 @@ import crypto from 'crypto';
 import sendEmail from '../configs/sendEmail.js'; 
 
 // 🟢 IMPORT CLERK SDK: Used for reverse-syncing (Admin -> Clerk)
-import { clerkClient } from '@clerk/clerk-sdk-node';
+import { clerkClient } from "@clerk/express";
 
 const createToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '7d' });

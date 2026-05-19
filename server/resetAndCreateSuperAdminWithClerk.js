@@ -1,7 +1,8 @@
 import "dotenv/config";
 import mongoose from 'mongoose';
 import User from './models/User.js';
-import { clerhorizon shopient } from '@clerk/clerk-sdk-node';
+// 🟢 FIX: Corrected import identifier to clerkClient
+import { clerkClient } from '@clerk/clerk-sdk-node';
 
 const resetAndCreateSuperAdminWithClerk = async () => {
   try {
@@ -9,8 +10,8 @@ const resetAndCreateSuperAdminWithClerk = async () => {
     
     // 1. Connect to MongoDB
     console.log('1️⃣ Connecting to MongoDB...');
-    const mongoURI = process.env.MONGODB_URI ;
-    await mongoose.connect(mongoURI);
+    const mongodbURI = process.env.MONGODB_URI ;
+    await mongoose.connect(mongodbURI);
     console.log('✅ MongoDB Connected!\n');
 
     // 2. Delete old Super Admin from MongoDB
@@ -27,7 +28,8 @@ const resetAndCreateSuperAdminWithClerk = async () => {
     let clerkUserId = '';
     
     try {
-      const clerkUser = await clerhorizon shopient.users.createUser({
+      // 🟢 FIX: Changed to clerkClient
+      const clerkUser = await clerkClient.users.createUser({
         emailAddress: ['awakeningjuniorgroup@gmail.com'],
         password: '@pa12!&Ter',
         firstName: 'Awakening',
@@ -47,19 +49,22 @@ const resetAndCreateSuperAdminWithClerk = async () => {
         console.log('⚠️ User already exists in Clerk. Deleting and recreating...\n');
         
         try {
-          const clerkUsers = await clerhorizon shopient.users.getUserList({ 
+          // 🟢 FIX: Changed to clerkClient
+          const clerkUsers = await clerkClient.users.getUserList({ 
             emailAddress: ['awakeningjuniorgroup@gmail.com'] 
           });
           
           if (clerkUsers.data && clerkUsers.data.length > 0) {
             const oldClerkUserId = clerkUsers.data[0].id;
             console.log(`   Deleting old Clerk user: ${oldClerkUserId}...`);
-            await clerhorizon shopient.users.deleteUser(oldClerkUserId);
+            // 🟢 FIX: Changed to clerkClient
+            await clerkClient.users.deleteUser(oldClerkUserId);
             console.log('   ✅ Old Clerk user deleted\n');
             
             // Now create new one
             console.log('   Creating new Clerk user...');
-            const newClerkUser = await clerhorizon shopient.users.createUser({
+            // 🟢 FIX: Changed to clerkClient
+            const newClerkUser = await clerkClient.users.createUser({
               emailAddress: ['awakeningjuniorgroup@gmail.com'],
               password: 'pass321',
               firstName: 'Parth',
@@ -99,9 +104,7 @@ const resetAndCreateSuperAdminWithClerk = async () => {
     console.log('═══════════════════════════════════════════');
     console.log('🎉 SUPER ADMIN FULLY SYNCED!\n');
     console.log('📧 Email: awakeningjuniorgroup@gmail.com');
-    
     console.log('🎯 Role: superadmin');
-   
     console.log('✅ MongoDB + Clerk Synced');
     console.log('═══════════════════════════════════════════\n');
     console.log('✅ You can now login from the app!\n');

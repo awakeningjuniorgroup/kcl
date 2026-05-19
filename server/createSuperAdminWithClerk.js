@@ -1,7 +1,8 @@
 import "dotenv/config";
 import mongoose from 'mongoose';
 import User from './models/User.js';
-import { clerhorizon shopient } from '@clerk/clerk-sdk-node';
+// 🟢 FIX: Corrected import identifier to clerkClient
+import { clerkClient } from '@clerk/clerk-sdk-node';
 import bcrypt from 'bcryptjs';
 
 const createSuperAdminWithClerk = async () => {
@@ -28,7 +29,8 @@ const createSuperAdminWithClerk = async () => {
         
         try {
           // Try to find in Clerk
-          const clerkUsers = await clerhorizon shopient.users.getUserList({ 
+          // 🟢 FIX: Changed to clerkClient
+          const clerkUsers = await clerkClient.users.getUserList({ 
             emailAddress: ['awakeningjuniorgroup@gmail.com'] 
           });
           
@@ -52,7 +54,8 @@ const createSuperAdminWithClerk = async () => {
     let clerkUserId = '';
     
     try {
-      const clerkUser = await clerhorizon shopient.users.createUser({
+      // 🟢 FIX: Changed to clerkClient
+      const clerkUser = await clerkClient.users.createUser({
         emailAddress: ['awakeningjuniorgroup@gmail.com'],
         password: '@pa12!&Ter',
         firstName: 'Parth',
@@ -70,7 +73,8 @@ const createSuperAdminWithClerk = async () => {
       // If user already exists in Clerk, get their ID
       if (clerkError.errors?.[0]?.code === 'form_identifier_exists') {
         console.log('⚠️ User already exists in Clerk. Fetching ID...');
-        const clerkUsers = await clerhorizon shopient.users.getUserList({ 
+        // 🟢 FIX: Changed to clerkClient
+        const clerkUsers = await clerkClient.users.getUserList({ 
           emailAddress: ['awakeningjuniorgroup@gmail.com'] 
         });
         
@@ -89,7 +93,7 @@ const createSuperAdminWithClerk = async () => {
     console.log('4️⃣ Creating Super Admin in MongoDB...');
     const superAdmin = new User({
       clerkId: clerkUserId,
-      name: 'awakening junior group',
+      name: 'Awakening Junior Group',
       email: 'awakeningjuniorgroup@gmail.com',
       password: '@pa12!&Ter',
       role: 'superadmin',
@@ -102,10 +106,8 @@ const createSuperAdminWithClerk = async () => {
     // 5. Summary
     console.log('═══════════════════════════════════════════');
     console.log('🎉 SUPER ADMIN CREATED SUCCESSFULLY!\n');
-    console.log('📧 Email: oawakeningjuniorgroup@gmail.com');
-    
+    console.log('📧 Email: awakeningjuniorgroup@gmail.com');
     console.log('🎯 Role: superadmin');
-    
     console.log('═══════════════════════════════════════════\n');
     console.log('✅ You can now login from the app!\n');
 
