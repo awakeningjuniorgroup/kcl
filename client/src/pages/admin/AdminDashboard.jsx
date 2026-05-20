@@ -336,7 +336,7 @@ const AdminDashboard = () => {
                       </Pie>
                       <RechartsTooltip
                         formatter={(val) =>
-                          `${currency}${val.toLocaleString()}`
+                          `${val.toLocaleString()}${currency}`
                         }
                         contentStyle={{
                           borderRadius: "4px",
@@ -440,7 +440,7 @@ const AdminDashboard = () => {
                           fontSize: "12px",
                         }}
                         itemStyle={{ fontWeight: 600, color: "#f26691" }}
-                        formatter={(val) => [`${val}FCFA`, "Revenue"]}
+                        formatter={(val) => [ "Revenue" ,`${val}FCFA`]}
                       />
                       <Area
                         type="monotone"
