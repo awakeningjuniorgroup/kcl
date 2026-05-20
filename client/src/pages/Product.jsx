@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import ReviewSection from '../components/ReviewSection';
-import { Star, Truck, ShoppingCart, Heart, Share2, Tag, ChevronRight, Minus, Plus, Zap, Headset } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Star, Truck, ShoppingCart, Heart, Share2, Tag, ChevronRight, Minus, Plus, Zap, Headset, X, Maximize2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Product = () => {
     const { productId } = useParams();
@@ -14,6 +14,7 @@ const Product = () => {
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [quantity, setQuantity] = useState(1);
+    const [isZoomed, setIsZoomed] = useState(false); // 🟢 État pour l'agrandissement de l'image
 
     const fetchProductData = () => {
         const item = products.find((item) => item._id === productId);
@@ -40,7 +41,6 @@ const Product = () => {
     }, [productId, products]);
 
     const handleAddToCart = () => {
-        // Trigger the global addToCart context (which will now handle the global animation)
         addToCart(product._id, currentWeight);
     };
 
@@ -82,7 +82,11 @@ const Product = () => {
                     
                     {/* LEFT: GALLERY (Sticky) */}
                     <div className="lg:sticky lg:top-24 h-fit space-y-4">
-                        <div className="relative bg-gray-50 rounded-[2.5rem] overflow-hidden aspect-square flex items-center justify-center group">
+                        {/* 🟢 Conteneur d'image cliquable pour zoomer */}
+                        <div 
+                            onClick={() => setIsZoomed(true)}
+                            className="relative bg-gray-50 rounded-[2.5rem] overflow-hidden aspect-square flex items-center justify-center group cursor-zoom-in"
+                        >
                             <motion.img 
                                 key={image}
                                 initial={{ opacity: 0, scale: 0.9 }}
@@ -93,8 +97,13 @@ const Product = () => {
                                 className="w-[85%] h-[85%] object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
                             />
                             
+                            {/* Petit indicateur visuel de zoom au survol */}
+                            <div className="absolute bottom-6 right-6 p-3 bg-white/80 backdrop-blur rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:block">
+                                <Maximize2 size={18} className="text-gray-600" />
+                            </div>
+
                             {/* Floating Actions */}
-                            <div className="absolute top-6 right-6 flex flex-col gap-3">
+                            <div className="absolute top-6 right-6 flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
                                 <button className="p-3 bg-white/80 backdrop-blur rounded-full shadow-sm hover:scale-110 hover:text-red-500 transition-all">
                                     <Heart size={20} />
                                 </button>
@@ -129,7 +138,7 @@ const Product = () => {
                             </span>
                             {product.bestseller && (
                                 <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                    Bestseller
+                                    Meilleur vente
                                 </span>
                             )}
                         </div>
@@ -153,7 +162,7 @@ const Product = () => {
                             </div>
                             {discount > 0 && (
                                 <p className="text-green-600 font-bold text-sm bg-green-100 inline-block px-3 py-1 rounded-full">
-                                    vous gardez {currentPrice - currentOfferPrice} ({discount}%) {currency}``
+                                    vous gardez {currentPrice - currentOfferPrice} ({discount}%) {currency}
                                 </p>
                             )}
                         </div>
@@ -205,7 +214,6 @@ const Product = () => {
                             <div className="flex flex-col items-center justify-center text-center p-4 border border-slate-100 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] bg-white">
                                 <Truck className="text-[#4A76AC] mb-2" size={24} />
                                 <span className="font-bold text-sm text-slate-800">livraison gratuite</span>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5"></span>
                             </div>
 
                             <div className="flex flex-col items-center justify-center text-center p-4 border border-slate-100 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] bg-white">
@@ -242,7 +250,7 @@ const Product = () => {
                 )}
             </main>
 
-            {/* 🟢 MOBILE STICKY FOOTER */}
+            {/* MOBILE STICKY FOOTER */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 md:hidden z-40 flex items-center justify-between gap-4 safe-area-pb">
                 <div className="flex flex-col">
                     <span className="text-xs text-gray-500 font-bold uppercase">Total</span>
@@ -255,6 +263,40 @@ const Product = () => {
                     Ajouter au panier
                 </button>
             </div>
+
+            {/* 🟢 LIGHTBOX MODAL (Image agrandie au clic) */}
+            <AnimatePresence>
+                {isZoomed && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsZoomed(false)}
+                        className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 cursor-zoom-out"
+                    >
+                        {/* Bouton de fermeture */}
+                        <button 
+                            onClick={() => setIsZoomed(false)}
+                            className="absolute top-6 right-6 text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition-colors"
+                        >
+                            <X size={24} />
+                        </button>
+
+                        {/* Image agrandie */}
+                        <motion.img 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            src={image} 
+                            alt={product.name} 
+                            className="max-w-full max-h-[85vh] object-contain rounded-xl select-none"
+                            onClick={(e) => e.stopPropagation()} // Évite de fermer si on clique juste sur l'image
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 };
