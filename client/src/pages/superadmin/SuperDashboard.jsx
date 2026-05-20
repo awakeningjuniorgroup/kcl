@@ -403,25 +403,25 @@ const SuperDashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               <MetricCard
                 title="Gross System Volume"
-                value={`${currency}${stats.financials.revenue.toLocaleString()}`}
+                value={`${stats.financials.revenue.toLocaleString()}${currency}`}
                 icon={IndianRupee}
                 trend={14.2}
               />
               <MetricCard
                 title="Net Platform Profit (In)"
-                value={`${currency}${platformProfit.toLocaleString()}`}
+                value={`${platformProfit.toLocaleString()}${currency}`}
                 icon={Landmark}
                 trend={8.5}
                 subtitle="After partner splits"
               />
               <MetricCard
                 title="Partner Payouts (Out)"
-                value={`${currency}${(stats.financials.revenue - platformProfit).toLocaleString()}`}
+                value={`${(stats.financials.revenue - platformProfit).toLocaleString()}${currency}`}
                 icon={CreditCard}
               />
               <MetricCard
                 title="Pending Obligations"
-                value={`${currency}${pendingPayouts.toLocaleString()}`}
+                value={`${pendingPayouts.toLocaleString()}${currency}`}
                 icon={Clock}
                 subtitle="Awaiting approval"
               />
