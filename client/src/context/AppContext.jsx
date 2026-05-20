@@ -17,7 +17,7 @@ import { fr } from "../locales/fr";
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-  const currency = "XAF"; // FCFA
+  const currency = "FCFA"; // FCFA
   const language = "fr"; // French
   const navigate = useNavigate();
   const backendUrl =

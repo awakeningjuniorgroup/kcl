@@ -295,13 +295,13 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
               <MetricCard
                 title="Gross Volume (GMV)"
-                value={`${currency}${totalGross.toLocaleString()}`}
+                value={`${totalGross.toLocaleString()}${currency}`}
                 icon={CreditCard}
                 trend={12.5}
               />
               <MetricCard
                 title="Net Platform Profit"
-                value={`${currency}${platformProfit.toLocaleString()}`}
+                value={`${platformProfit.toLocaleString()}${currency}`}
                 icon={Landmark}
                 trend={8.2}
               />
@@ -358,12 +358,13 @@ const AdminDashboard = () => {
                   </ResponsiveContainer>
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center -mt-4">
                     <span className="block text-2xl font-bold text-slate-900">
-                      {currency}
+                      
                       {(
                         platformProfit +
                         completedPayouts +
                         pendingPayouts
                       ).toLocaleString()}
+                      {currency}
                     </span>
                     <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-1 block">
                       Accounted
@@ -379,7 +380,7 @@ const AdminDashboard = () => {
                     7-Day Revenue Momentum
                   </h3>
                 </div>
-                <div className="p-6 w-full h-[300px]">
+                <div className="p-6 w-full h-75">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={graphData}
@@ -439,7 +440,7 @@ const AdminDashboard = () => {
                           fontSize: "12px",
                         }}
                         itemStyle={{ fontWeight: 600, color: "#f26691" }}
-                        formatter={(val) => [`FCFA${val}`, "Revenue"]}
+                        formatter={(val) => [`${val}FCFA`, "Revenue"]}
                       />
                       <Area
                         type="monotone"

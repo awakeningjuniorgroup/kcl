@@ -3,7 +3,6 @@ import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 import {
   Save,
-  IndianRupee,
   Truck,
   AlertTriangle,
   RefreshCcw,
@@ -61,7 +60,7 @@ const SystemSettings = () => {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
             <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-              <IndianRupee size={20} />
+            
             </div>{" "}
             Financials
           </h3>
