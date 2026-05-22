@@ -1137,8 +1137,9 @@ const SuperDashboard = () => {
                           {/* 4. Payment Info */}
                           <td className="p-5 align-top">
                             <p className="font-black text-slate-900 text-sm mb-2">
-                              {currency}
+                              
                               {order.amount}
+                              {currency}
                             </p>
                             <span
                               className={`text-[9px] font-bold px-2.5 py-1 rounded-md border uppercase tracking-widest ${order.paymentMethod === "COD" ? "bg-orange-50 text-orange-700 border-orange-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"}`}

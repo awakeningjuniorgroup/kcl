@@ -51,7 +51,7 @@ const AddProduct = () => {
   const UNIT_TYPES = {
     Weight: ["gm", "kg"],
     Volume: ["ml", "L"],
-    Count: ["Pieces", "Paquet", "boite", "lot", "sachet"],
+    Count: ["Piece", "Paquet", "boite", "lot","Pieces", "sachet"],
     area: ["m²", "cm²"],
     puissance: ["w", "kw"],
     longueur: ["m", "cm"],

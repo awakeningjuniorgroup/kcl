@@ -93,11 +93,11 @@ const FlashSale = () => {
                     transition={{ duration: 0.5 }}
                     className="mx-4 md:mx-16 lg:mx-32 mt-12 md:mt-20 relative font-outfit"
                 >
-                    <div className={`relative bg-gradient-to-r ${themes[themeIndex]} rounded-3xl p-8 md:p-12 overflow-hidden shadow-2xl transition-colors duration-1000 ease-in-out`}>
+                    <div className={`relative bg-linear-to-r ${themes[themeIndex]} rounded-3xl p-8 md:p-12 overflow-hidden shadow-2xl transition-colors duration-1000 ease-in-out`}>
                         
                         <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
                         <motion.div animate={{ rotate: -360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute -bottom-32 -left-32 w-80 h-80 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-
+                        
                         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
                             <div className="text-center lg:text-left">
                                 <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full mb-4 border border-white/30 shadow-sm">

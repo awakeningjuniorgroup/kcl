@@ -487,8 +487,8 @@ const MyOrders = () => {
                                     <div class="item-meta">Size/Variant: ${item.size || "N/A"}</div>
                                 </td>
                                 <td class="col-center"><strong>${item.quantity}</strong></td>
-                                <td class="col-right">${currency}${Number(price).toFixed(2)}</td>
-                                <td class="col-right"><strong>${currency}${(Number(price) * item.quantity).toFixed(2)}</strong></td>
+                                <td class="col-right"><strong>${Number(price).toFixed(2)}${currency}</strong></td>
+                                <td class="col-right"><strong>${(Number(price) * item.quantity).toFixed(2)}${currency}</strong></td>
                             </tr>
                         `;
                           })
@@ -500,15 +500,15 @@ const MyOrders = () => {
                     <div class="totals">
                         <div class="totals-row">
                             <span>Sous Total</span>
-                            <span>${currency}${subtotal.toFixed(2)}</span>
+                            <span>${subtotal.toFixed(2)}${currency}</span>
                         </div>
                         <div class="totals-row border-top">
                             <span>Frais de livraison</span>
-                            <span>${currency}${deliveryFee.toFixed(2)}</span>
+                            <span>${deliveryFee.toFixed(2)}${currency}</span>
                         </div>
                         <div class="totals-row grand-total">
                             <span>Total Due</span>
-                            <span>${currency}${order.amount.toFixed(2)}</span>
+                            <span>${order.amount.toFixed(2)} ${currency}</span>
                         </div>
                     </div>
                 </div>
@@ -596,7 +596,7 @@ const MyOrders = () => {
           <div>
             <h2 className="text-3xl font-black text-gray-800">Mes commandes</h2>
             <p className="text-gray-500 mt-1">
-              Track, manage, and download invoices Suivre, gérer, et telécharger
+              Suivre, gérer, et télécharger vos factures, gérer, et télécharger
               vos factures:
             </p>
           </div>

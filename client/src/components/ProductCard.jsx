@@ -1,20 +1,25 @@
 import React, { useContext } from "react";
-import { Link, redirect } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { motion } from "framer-motion";
 import { ShoppingCart, Star } from "lucide-react";
 
 const ProductCard = ({ product }) => {
   const { currency, addToCart, t } = useContext(AppContext);
+  const navigate = useNavigate();
 
   if (!product) return null;
 
-  // Calculate discount
   const discount = product.offerPrice
     ? Math.round(((product.price - product.offerPrice) / product.price) * 100)
     : 0;
 
   const currentPrice = product.offerPrice || product.price;
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    await addToCart(product._id, product.variants?.[0]?.weight || null);
+  };
 
   return (
     <motion.div
@@ -47,11 +52,7 @@ const ProductCard = ({ product }) => {
           {/* Overlay with Quick Actions (Desktop) */}
           <div className="absolute inset-x-4 bottom-4 translate-y-[120%] group-hover:translate-y-0 transition-transform duration-300 z-20 hidden md:block">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                addToCart(product._id, product.variants?.[0]?.weight || null);
-                redirect("/cart");
-              }}
+              onClick={handleAddToCart}
               className="w-full py-3 bg-white/90 backdrop-blur-md text-gray-900 font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-[#4A76AC] hover:text-white transition-colors"
             >
               <ShoppingCart size={16} /> {t.cartActions.addToCart}
@@ -81,13 +82,11 @@ const ProductCard = ({ product }) => {
 
           <div className="flex items-center gap-2 mt-2">
             <span className="text-lg font-black text-gray-900">
-             
               {currentPrice}
-               {currency}
+              {currency}
             </span>
             {discount > 0 && (
               <span className="text-sm text-gray-400 line-through decoration-red-400 decoration-2">
-                
                 {product.price}
                 {currency}
               </span>
@@ -96,11 +95,9 @@ const ProductCard = ({ product }) => {
         </div>
       </Link>
 
-      {/* Mobile Quick Add (Visible always on small screens) */}
+      {/* Mobile Quick Add */}
       <button
-        onClick={() =>
-          addToCart(product._id, product.variants?.[0]?.weight || null)
-        }
+        onClick={handleAddToCart}
         className="md:hidden absolute bottom-[88px] right-3 bg-green-600 text-white p-2.5 rounded-full shadow-lg active:scale-95 transition-transform"
       >
         <ShoppingCart size={18} />

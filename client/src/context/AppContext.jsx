@@ -261,6 +261,7 @@ export const AppContextProvider = ({ children }) => {
     if (cartData[itemId]) {
       if (cartData[itemId][size]) cartData[itemId][size] += 1;
       else cartData[itemId][size] = 1;
+      redirect("/cart");
     } else {
       cartData[itemId] = {};
       cartData[itemId][size] = 1;

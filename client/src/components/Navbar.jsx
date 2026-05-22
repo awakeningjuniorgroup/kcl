@@ -42,7 +42,9 @@ const Navbar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
   const notifRef = useRef(null);
+
 
   // 🟢 FUTURISTIC HOVER STATES
   const [showCartHover, setShowCartHover] = useState(false);
@@ -79,7 +81,9 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => setOpen(false), [location]);
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
 
   // 🟢 FETCH NOTIFICATIONS & LIVE ORDERS
   useEffect(() => {
@@ -127,6 +131,12 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target))
         setIsSearchFocused(false);
+      if (
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(event.target)
+      ) {
+        setIsSearchFocused(false);
+      }
       if (notifRef.current && !notifRef.current.contains(event.target))
         setShowNotif(false);
     };
@@ -137,7 +147,8 @@ const Navbar = () => {
   const handleSearchSelect = (productId) => {
     setLocalSearch("");
     setIsSearchFocused(false);
-    setOpen(false); // Close mobile menu if open
+    setMobileSearchOpen(false);
+    setOpen(false);
     navigate(`/product/${productId}`);
   };
 
@@ -242,11 +253,10 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 font-bold text-[#4A76AC] text-[14px] xl:text-[15px] flex-1 px-4 xl:px-8">
             <NavLink
               to="/home"
-              className={
-                ({ isActive }) =>
-                  isActive
-                    ? "text-[#4A76AC] border-b-2 border-[#4A76AC]" // Style si actif (optionnel : ajoute une ligne en dessous)
-                    : "hover:text-[#3d618c] transition-colors" // Bleu un peu plus foncé au survol
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[#4A76AC] border-b-2 border-[#4A76AC]"
+                  : "hover:text-[#3d618c] transition-colors"
               }
             >
               {t.nav.home}
@@ -287,8 +297,66 @@ const Navbar = () => {
           </div>
         )}
 
+        {/* 🟢 MOBILE SEARCH BAR INLINE — entre logo et icônes, visible uniquement mobile */}
+        {allowSurfing && (
+          <div ref={mobileSearchRef} className="flex-1 mx-3 md:hidden relative z-50">
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-200
+                ${isSearchFocused ? "bg-white border-[#3d618c] shadow-[0_0_0_3px_rgba(61,97,140,0.1)]" : "bg-slate-100 border-transparent"}`}
+            >
+              <Search className={`w-4 h-4 shrink-0 transition-colors ${isSearchFocused ? "text-[#3d618c]" : "text-slate-400"}`} />
+              <input
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                onFocus={handleSearchFocus}
+                className="w-full bg-transparent outline-none text-sm font-medium text-slate-800 placeholder:text-slate-400"
+                type="text"
+                placeholder={t.nav.search + "..."}
+              />
+              {localSearch && (
+                <button onClick={() => setLocalSearch("")} className="p-0.5 rounded-full text-slate-400">
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            {/* MOBILE INLINE SEARCH SUGGESTIONS */}
+            {isSearchFocused && localSearch.length > 0 && (
+              <div className="absolute top-[110%] left-0 right-0 bg-white shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] border border-slate-100 rounded-2xl overflow-hidden">
+                {searchResults.length > 0 ? (
+                  <div>
+                    <div className="px-4 py-2.5 bg-slate-50/50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Top Results
+                    </div>
+                    {searchResults.map((item) => (
+                      <div
+                        key={item._id}
+                        onClick={() => handleSearchSelect(item._id)}
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 cursor-pointer border-b last:border-b-0 border-slate-50 transition-colors"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 p-1">
+                          <img src={item.image[0]} alt={item.name} className="w-full h-full object-contain mix-blend-multiply" />
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                          <p className="text-sm font-bold text-slate-800 truncate">{item.name}</p>
+                          <p className="text-xs text-emerald-600 font-black">{currency}{item.offerPrice}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-5 text-center text-slate-500 text-sm font-medium flex flex-col items-center gap-2">
+                    <Search size={22} className="text-slate-300" />
+                    {t.navbar.noProductsFound}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center gap-3 md:gap-4 shrink-0">
-          {/* 🟢 DESKTOP SEARCH BAR */}
+          {/* 🟢 DESKTOP SEARCH BAR — visible md et plus uniquement */}
           {allowSurfing && (
             <div ref={searchRef} className="hidden md:block relative z-50">
               <div
@@ -380,7 +448,6 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      // 🟢 FIX: Mobile responsive bounding box so it doesn't bleed off screen
                       className="absolute right-[-60px] sm:right-0 mt-3 w-[85vw] max-w-[320px] sm:w-80 bg-white/95 backdrop-blur-xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.2)] border border-slate-100 rounded-2xl overflow-hidden z-50 origin-top-right"
                     >
                       <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
@@ -666,16 +733,16 @@ const Navbar = () => {
             </div>
           </SignedIn>
 
-          {/* 🟢 NEW: MOBILE SEARCH BAR */}
+          {/* 🟢 SEARCH BAR DANS LE MENU MOBILE */}
           {allowSurfing && (
             <div className="relative mb-6 shrink-0">
-              <div className="flex items-center gap-2.5 px-4 py-3 bg-slate-100 rounded-xl border border-transparent focus-within:border-emerald-500 focus-within:bg-white transition-colors">
+              <div className="flex items-center gap-2.5 px-4 py-3 bg-slate-100 rounded-xl border border-transparent focus-within:border-[#3d618c] focus-within:bg-white transition-colors">
                 <Search className="w-4 h-4 text-slate-400" />
                 <input
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
                   className="w-full bg-transparent outline-none text-sm font-medium text-slate-800 placeholder:text-slate-400"
-                  placeholder={t.authMessages.searchProducts + "..."}
+                  placeholder={t.nav.search + "..."}
                 />
                 {localSearch && (
                   <button onClick={() => setLocalSearch("")}>
@@ -684,7 +751,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* MOBILE SEARCH RESULTS */}
+              {/* RÉSULTATS DANS LE MENU */}
               {localSearch.length > 0 && searchResults.length > 0 && (
                 <div className="mt-2 bg-white border border-slate-100 shadow-sm rounded-xl overflow-hidden">
                   {searchResults.map((item) => (
@@ -703,9 +770,8 @@ const Navbar = () => {
                           {item.name}
                         </p>
                         <p className="text-[10px] font-black text-emerald-600">
-                          
-                          {item.offerPrice}
                           {currency}
+                          {item.offerPrice}
                         </p>
                       </div>
                     </div>
@@ -778,7 +844,7 @@ const Navbar = () => {
                 )}
               </NavLink>
 
-              {/* 🟢 MOBILE CART LINK (Needed since hover is hidden on mobile) */}
+              {/* 🟢 MOBILE CART LINK */}
               {!isStaff && (
                 <NavLink
                   onClick={handleCartClick}
@@ -796,7 +862,7 @@ const Navbar = () => {
                             isActive ? "text-emerald-500" : "text-slate-400"
                           }
                         />{" "}
-                        pannier
+                        panier
                       </div>
                       {getCartCount() > 0 && (
                         <span className="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full">

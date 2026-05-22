@@ -26,6 +26,8 @@ const Home = () => {
     >
       {/* Animated Background */}
       {/* <KiteBackground /> */}
+      {/* Flash Sale Banner */}
+        <FlashSale />
 
       {/* Main Content */}
       <div className="relative z-10">
@@ -37,8 +39,7 @@ const Home = () => {
           <Categories />
         </div>
 
-        {/* Flash Sale Banner */}
-        <FlashSale />
+        
 
         {/* Best Sellers */}
         <BestSeller />

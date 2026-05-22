@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, redirect } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import ProductCard from '../components/ProductCard';
 import ReviewSection from '../components/ReviewSection';
@@ -42,6 +42,7 @@ const Product = () => {
 
     const handleAddToCart = () => {
         addToCart(product._id, currentWeight);
+        
     };
 
     if (isLoading || !product) {
@@ -67,11 +68,11 @@ const Product = () => {
                 <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
                     <div className="flex items-center text-sm text-gray-500 overflow-x-auto whitespace-nowrap scrollbar-hide">
                         <span className="cursor-pointer hover:text-black" onClick={()=>navigate('/')}>Accueil</span>
-                        <ChevronRight size={14} className="mx-2 flex-shrink-0" />
+                        <ChevronRight size={14} className="mx-2 shrink-0" />
                         <span className="cursor-pointer hover:text-black" onClick={()=>navigate('/products')}>Boutique</span>
-                        <ChevronRight size={14} className="mx-2 flex-shrink-0" />
+                        <ChevronRight size={14} className="mx-2 shrink-0" />
                         <span className="cursor-pointer hover:text-black capitalize" onClick={()=>navigate(`/products/${product.category}`)}>{product.category}</span>
-                        <ChevronRight size={14} className="mx-2 flex-shrink-0" />
+                        <ChevronRight size={14} className="mx-2 shrink-0" />
                         <span className="font-medium text-gray-900">{product.name}</span>
                     </div>
                 </div>
@@ -119,7 +120,7 @@ const Product = () => {
                                 <button 
                                     key={index}
                                     onClick={() => setImage(item)}
-                                    className={`relative flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                                    className={`relative shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
                                         image === item ? 'border-green-600 opacity-100 ring-2 ring-green-100' : 'border-transparent bg-gray-50 opacity-70 hover:opacity-100'
                                     }`}
                                 >
@@ -200,7 +201,7 @@ const Product = () => {
                                 onClick={handleAddToCart}
                                 className="flex-1 bg-[#4A76AC] text-white rounded-full font-bold h-14 hover:bg-[#3d618c] transition-colors flex items-center justify-center gap-2 shadow-xl shadow-gray-200 active:scale-95"
                             >
-                                <ShoppingCart size={20} /> Ajouter au panier   {currency}{currentOfferPrice * quantity}
+                                <ShoppingCart size={20} /> Ajouter au panier   {currentOfferPrice * quantity}{currency}
                             </button>
                         </div>
 
@@ -256,11 +257,15 @@ const Product = () => {
                     <span className="text-xs text-gray-500 font-bold uppercase">Total</span>
                     <span className="text-2xl font-black text-gray-900">{currentOfferPrice} {currency}</span>
                 </div>
+               
                 <button 
                     onClick={handleAddToCart}
                     className="flex-1 bg-[#4A76AC] text-white h-12 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
                 >
-                    Ajouter au panier
+                     <a href="/cart">
+                    <ShoppingCart size={18} /> Ajouter au panier
+                     </a>
+                    
                 </button>
             </div>
 

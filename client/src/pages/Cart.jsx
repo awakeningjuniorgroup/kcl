@@ -307,7 +307,7 @@ const Cart = () => {
   const amountShort = MIN_ORDER_AMOUNT - totalAmount;
 
   useEffect(() => {
-    if (totalAmount > 1000 && paymentMethod === "cod") {
+    if (totalAmount > 2500000 && paymentMethod === "cod") {
       setPaymentMethod("online");
     }
   }, [totalAmount]);
@@ -354,18 +354,18 @@ const Cart = () => {
 
     if (totalAmount < MIN_ORDER_AMOUNT) {
       return toast.error(
-        `Add items worth ${currency}${amountShort} more to place order!`,
+        `Add items worth ${amountShort}${currency} more to place order!`,
       );
     }
     if (totalAmount > MAX_ORDER_AMOUNT) {
       return toast.error(
-        `Order total cannot exceed ${currency}${MAX_ORDER_AMOUNT.toLocaleString()}`,
+        `Order total cannot exceed ${MAX_ORDER_AMOUNT.toLocaleString()}${currency}`,
       );
     }
 
-    if (totalAmount > 1000 && paymentMethod === "cod") {
+    if (totalAmount > 2500000 && paymentMethod === "cod") {
       return toast.error(
-        `Orders above ${currency}1,000 require Online Payment`,
+        `Orders require Online Payment`,
       );
     }
 
@@ -441,7 +441,7 @@ const Cart = () => {
     );
   }
 
-  const isCodDisabled = totalAmount > 1000;
+  const isCodDisabled = totalAmount > 2500000;
 
   return (
     <div className="flex flex-col md:flex-row mt-16 gap-8 pb-16 px-4 md:px-16 font-outfit relative max-w-7xl mx-auto">
@@ -484,14 +484,16 @@ const Cart = () => {
                   <span className="bg-gray-100 px-2 rounded text-xs">
                     {product.size}
                   </span>{" "}
-                  {currency}
+                  
                   {price} x {product.quantity}
+                  {currency}
                 </p>
               </div>
               <div className="flex flex-col items-end gap-3">
                 <p className="font-bold text-lg">
-                  {currency}
+                  
                   {price * product.quantity}
+                  {currency}
                 </p>
                 <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-1">
                   <button
@@ -809,9 +811,9 @@ const Cart = () => {
               <div>
                 <p className="font-bold text-sm">Déjà ici!</p>
                 <p className="text-xs font-medium opacity-90">
-                  Ajouter {currency}
-                  {amountShort} plus pour atteindre {currency}
-                  {MIN_ORDER_AMOUNT} minimum de commande.
+                  Ajouter 
+                  {amountShort} {currency} plus pour atteindre 
+                  {MIN_ORDER_AMOUNT} {currency} minimum de commande.
                 </p>
               </div>
             </div>
@@ -939,7 +941,7 @@ const Cart = () => {
                   </span>
                   {isCodDisabled && (
                     <span className="text-[10px] font-bold text-red-500 flex items-center gap-1">
-                      <AlertCircle size={10} /> non disponible {currency}1000
+                      <AlertCircle size={10} /> non disponible pour le montant de cette commande
                     </span>
                   )}
                 </div>
@@ -977,7 +979,7 @@ const Cart = () => {
             {isProcessing
               ? "PROCESSING..."
               : totalAmount < MIN_ORDER_AMOUNT
-                ? `ADD ${currency}${amountShort} MORE`
+                ? `ADD ${amountShort}${currency} MORE`
                 : paymentMethod === "online"
                   ? "PAY NOW"
                   : "PLACE ORDER"}
