@@ -62,7 +62,7 @@ const ProductCard = ({ product }) => {
 
         {/* Info */}
         <div className="mt-4 px-2">
-          <h3 className="font-bold text-gray-800 text-sm truncate">
+          <h3 className="font-bold text-gray-800 text-sm truncate uppercase">
             {product.name}
           </h3>
 
