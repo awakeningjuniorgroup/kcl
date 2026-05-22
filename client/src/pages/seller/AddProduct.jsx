@@ -29,7 +29,7 @@ const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasVariants, setHasVariants] = useState(false);
 
-  // 🟢 DYNAMIC CATEGORIES: Extracts unique categories directly from your database
+  // 🟢 DYNAMIC CATEGORIES
   const existingCategories = useMemo(
     () => [...new Set(products.map((p) => p.category).filter(Boolean))],
     [products],
@@ -46,60 +46,77 @@ const AddProduct = () => {
     [products, category],
   );
 
-  const PLATFORM_FEE_PERCENT = systemSettings?.platformFeePercent || 5;
-  const DISCOUNT_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70];
+  const PLATFORM_FEE_PERCENT = systemSettings?.platformFeePercent ?? 0;
   const UNIT_TYPES = {
     Weight: ["gm", "kg"],
     Volume: ["ml", "L"],
-    Count: ["Piece", "Paquet", "boite", "lot","Pieces", "sachet"],
+    Count: ["Piece", "Paquet", "boite", "lot", "Pieces", "sachet"],
     area: ["m²", "cm²"],
     puissance: ["w", "kw"],
     longueur: ["m", "cm"],
   };
 
+  // --- POUR PRODUIT UNIQUE ---
   const [netIncome, setNetIncome] = useState("");
-  const [fakeDiscount, setFakeDiscount] = useState(20);
-  const [listingPrice, setListingPrice] = useState("");
-  const [fakeMrp, setFakeMrp] = useState("");
+  const [listingPrice, setListingPrice] = useState(""); // Ce que le client paie réellement
+  const [fakeMrp, setFakeMrp] = useState("");           // Le prix barré affiché
+  const [fakeDiscount, setFakeDiscount] = useState("20"); // Réduction par défaut (20%)
   const [simpleWeightValue, setSimpleWeightValue] = useState("");
   const [simpleWeightUnit, setSimpleWeightUnit] = useState("kg");
 
+  // --- POUR PRODUIT AVEC VARIANTES ---
   const [variants, setVariants] = useState([
     {
       weightValue: "",
       weightUnit: "kg",
       netIncome: "",
-      fakeDiscount: 20,
       listingPrice: "",
       fakeMrp: "",
+      fakeDiscount: "20",
     },
   ]);
 
-  const calculatePrices = (net, discountPerc) => {
+  // Fonction centrale de calcul des prix
+  const calculatePrices = (net, discountPercent = "20") => {
     const netVal = parseFloat(net) || 0;
-    const discVal = parseFloat(discountPerc) || 0;
-    if (netVal <= 0) return { listing: "", mrp: "" };
-    const listing = Math.ceil(netVal / ((100 - PLATFORM_FEE_PERCENT) / 100));
-    const mrp = Math.ceil(listing / ((100 - discVal) / 100));
-    return { listing, mrp };
+    const discount = parseFloat(discountPercent) || 0;
+    
+    if (netVal <= 0) return { listingPrice: "", fakeMrp: "" };
+
+    // 1. Le client paie le Net + la commission de la plateforme
+    const clientPrice = Math.ceil(netVal / ((100 - PLATFORM_FEE_PERCENT) / 100));
+
+    // 2. Le prix barré est calculé pour qu'une fois la réduction appliquée, on retombe sur le prix client
+    let originalPrice = clientPrice;
+    if (discount > 0 && discount < 100) {
+      originalPrice = Math.ceil(clientPrice / ((100 - discount) / 100));
+    }
+
+    return {
+      listingPrice: clientPrice,
+      fakeMrp: originalPrice,
+    };
   };
 
+  // Déclencheur de calcul pour le produit unique
   useEffect(() => {
-    const { listing, mrp } = calculatePrices(netIncome, fakeDiscount);
-    setListingPrice(listing);
-    setFakeMrp(mrp);
+    const { listingPrice: clientPrice, fakeMrp: originalPrice } = calculatePrices(netIncome, fakeDiscount);
+    setListingPrice(clientPrice);
+    setFakeMrp(originalPrice);
   }, [netIncome, fakeDiscount]);
 
+  // Gestion des changements dans les variantes
   const handleVariantChange = (index, field, value) => {
     const updated = [...variants];
     updated[index][field] = value;
+
     if (field === "netIncome" || field === "fakeDiscount") {
-      const { listing, mrp } = calculatePrices(
+      const { listingPrice: clientPrice, fakeMrp: originalPrice } = calculatePrices(
         updated[index].netIncome,
-        updated[index].fakeDiscount,
+        updated[index].fakeDiscount
       );
-      updated[index].listingPrice = listing;
-      updated[index].fakeMrp = mrp;
+      updated[index].listingPrice = clientPrice;
+      updated[index].fakeMrp = originalPrice;
     }
     setVariants(updated);
   };
@@ -111,11 +128,12 @@ const AddProduct = () => {
         weightValue: "",
         weightUnit: "kg",
         netIncome: "",
-        fakeDiscount: 20,
         listingPrice: "",
         fakeMrp: "",
+        fakeDiscount: "20",
       },
     ]);
+    
   const removeVariant = (index) =>
     setVariants(variants.filter((_, i) => i !== index));
 
@@ -129,6 +147,7 @@ const AddProduct = () => {
       setFiles(updated);
     }
   };
+  
   const removeImage = (index) => {
     const updated = [...files];
     updated[index] = null;
@@ -152,8 +171,8 @@ const AddProduct = () => {
         }
         finalVariants = variants.map((v) => ({
           weight: `${v.weightValue} ${v.weightUnit}`,
-          price: Number(v.fakeMrp),
-          offerPrice: Number(v.listingPrice),
+          price: Number(v.fakeMrp),       // Prix de base (Barré)
+          offerPrice: Number(v.listingPrice), // Prix final payé par le client
           inStock: true,
         }));
       } else {
@@ -164,8 +183,8 @@ const AddProduct = () => {
         finalVariants = [
           {
             weight: `${simpleWeightValue} ${simpleWeightUnit}`,
-            price: Number(fakeMrp),
-            offerPrice: Number(listingPrice),
+            price: Number(fakeMrp),       // Prix de base (Barré)
+            offerPrice: Number(listingPrice), // Prix final payé par le client
             inStock: true,
           },
         ];
@@ -199,6 +218,7 @@ const AddProduct = () => {
         setFiles(Array(4).fill(null));
         setNetIncome("");
         setListingPrice("");
+        setFakeMrp("");
         setSimpleWeightValue("");
         setHasVariants(false);
         setVariants([
@@ -206,9 +226,9 @@ const AddProduct = () => {
             weightValue: "",
             weightUnit: "kg",
             netIncome: "",
-            fakeDiscount: 20,
             listingPrice: "",
             fakeMrp: "",
+            fakeDiscount: "20",
           },
         ]);
         fetchProducts();
@@ -366,8 +386,7 @@ const AddProduct = () => {
         <div className="bg-emerald-50/50 p-8 rounded-3xl border border-emerald-100 shadow-sm relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-8 relative z-10 gap-4">
             <h3 className="text-sm font-bold text-emerald-800 uppercase tracking-widest flex items-center gap-2">
-              <TrendingUp size={16} className="text-emerald-600" /> Smart
-              Pricing
+              <TrendingUp size={16} className="text-emerald-600" /> Smart Pricing
             </h3>
             <label className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl border border-emerald-200 shadow-sm cursor-pointer hover:bg-emerald-50 transition-colors w-full sm:w-auto">
               <input
@@ -391,8 +410,8 @@ const AddProduct = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="relative z-10"
               >
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
-                  <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 items-end bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
+                  <div className="space-y-2 col-span-1 md:col-span-1">
                     <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex gap-1 items-center">
                       <Scale size={12} /> Unit / Size
                     </label>
@@ -403,14 +422,14 @@ const AddProduct = () => {
                         step="any"
                         value={simpleWeightValue}
                         onChange={(e) => setSimpleWeightValue(e.target.value)}
-                        className="w-1/2 px-4 py-3 outline-none text-sm font-medium bg-slate-50 border-r border-slate-200"
+                        className="w-1/2 px-3 py-3 outline-none text-sm font-medium bg-slate-50 border-r border-slate-200"
                         placeholder="1"
                         required={!hasVariants}
                       />
                       <select
                         value={simpleWeightUnit}
                         onChange={(e) => setSimpleWeightUnit(e.target.value)}
-                        className="w-1/2 px-3 py-3 bg-slate-50 text-sm font-bold text-slate-700 outline-none cursor-pointer"
+                        className="w-1/2 px-2 py-3 bg-slate-50 text-sm font-bold text-slate-700 outline-none cursor-pointer"
                       >
                         {Object.keys(UNIT_TYPES).map((group) => (
                           <optgroup key={group} label={group}>
@@ -424,7 +443,8 @@ const AddProduct = () => {
                       </select>
                     </div>
                   </div>
-                  <div className="space-y-2">
+
+                  <div className="space-y-2 col-span-1">
                     <label className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">
                       Your Net Earn (FCFA)
                     </label>
@@ -434,40 +454,48 @@ const AddProduct = () => {
                       value={netIncome}
                       onChange={(e) => setNetIncome(e.target.value)}
                       className="w-full bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 text-sm font-bold text-emerald-900 focus:ring-2 focus:ring-emerald-500 outline-none"
-                      placeholder="e.g. 100"
+                      placeholder="1000"
                       required={!hasVariants}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                      Discount
+
+                  <div className="space-y-2 col-span-1">
+                    <label className="text-[11px] font-bold text-amber-600 uppercase tracking-wider">
+                      Promo (%)
                     </label>
                     <select
                       value={fakeDiscount}
                       onChange={(e) => setFakeDiscount(e.target.value)}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer shadow-sm"
+                      className="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm font-bold text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none cursor-pointer"
                     >
-                      {DISCOUNT_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}% Off
-                        </option>
-                      ))}
+                      <option value="0">No Discount</option>
+                      <option value="10">10% Off</option>
+                      <option value="20">20% Off</option>
+                      <option value="30">30% Off</option>
+                      <option value="40">40% Off</option>
+                      <option value="50">50% Off</option>
                     </select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-blue-600 uppercase tracking-wider">
-                      <Eye size={12} className="inline mr-1" />
-                      Customer Pays
+
+                  <div className="space-y-2 col-span-1">
+                    <label className="text-[11px] font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                      <Eye size={12} /> Cust Pays
                     </label>
                     <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex items-center justify-between shadow-sm h-[46px]">
                       <span className="font-black text-blue-800 text-sm">
-                        FCFA{listingPrice || 0}
+                        {listingPrice || 0} F
                       </span>
-                      {fakeMrp && (
-                        <span className="text-[11px] font-bold text-slate-400 line-through">
-                          FCFA{fakeMrp}
-                        </span>
-                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 col-span-1">
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider line-through">
+                      Strike Price (MRP)
+                    </label>
+                    <div className="bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between shadow-sm h-[46px]">
+                      <span className="font-medium text-slate-500 text-sm line-through">
+                        {fakeMrp || 0} F
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -482,11 +510,10 @@ const AddProduct = () => {
               >
                 <div className="hidden md:grid grid-cols-12 gap-4 text-[11px] font-bold text-slate-400 px-6 uppercase tracking-widest">
                   <div className="col-span-3">Unit / Size</div>
-                  <div className="col-span-3 text-emerald-600">
-                    Net Earn (FCFA)
-                  </div>
-                  <div className="col-span-2">Discount</div>
-                  <div className="col-span-3 text-blue-600">Cust Pays</div>
+                  <div className="col-span-2 text-emerald-600">Net Earn</div>
+                  <div className="col-span-2 text-amber-600">Promo</div>
+                  <div className="col-span-2 text-blue-600">Cust Pays</div>
+                  <div className="col-span-2 text-slate-400">Strike Price</div>
                   <div className="col-span-1"></div>
                 </div>
                 <AnimatePresence>
@@ -496,7 +523,7 @@ const AddProduct = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-white p-6 md:p-4 rounded-2xl border border-emerald-100 shadow-sm"
+                      className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-white p-6 md:p-4 rounded-2xl border border-emerald-100 shadow-sm"
                     >
                       <div className="col-span-1 md:col-span-3 space-y-2 md:space-y-0">
                         <label className="md:hidden text-[11px] font-bold text-slate-400 uppercase tracking-wider">
@@ -509,11 +536,7 @@ const AddProduct = () => {
                             step="any"
                             value={item.weightValue}
                             onChange={(e) =>
-                              handleVariantChange(
-                                index,
-                                "weightValue",
-                                e.target.value,
-                              )
+                              handleVariantChange(index, "weightValue", e.target.value)
                             }
                             className="w-1/2 px-3 py-2.5 outline-none text-sm font-medium bg-slate-50 border-r border-slate-200"
                             required={hasVariants}
@@ -521,11 +544,7 @@ const AddProduct = () => {
                           <select
                             value={item.weightUnit}
                             onChange={(e) =>
-                              handleVariantChange(
-                                index,
-                                "weightUnit",
-                                e.target.value,
-                              )
+                              handleVariantChange(index, "weightUnit", e.target.value)
                             }
                             className="w-1/2 px-2 py-2.5 bg-slate-50 text-sm font-bold text-slate-700 outline-none cursor-pointer"
                           >
@@ -541,68 +560,71 @@ const AddProduct = () => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-span-1 md:col-span-3 space-y-2 md:space-y-0">
+
+                      <div className="col-span-1 md:col-span-2 space-y-2 md:space-y-0">
                         <label className="md:hidden text-[11px] font-bold text-emerald-600 uppercase tracking-wider">
-                          Your Earn (FCFA)
+                          Net Earn (FCFA)
                         </label>
                         <input
                           type="number"
                           min="1"
                           value={item.netIncome}
                           onChange={(e) =>
-                            handleVariantChange(
-                              index,
-                              "netIncome",
-                              e.target.value,
-                            )
+                            handleVariantChange(index, "netIncome", e.target.value)
                           }
                           className="w-full bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 text-sm font-bold text-emerald-900 focus:ring-2 focus:ring-emerald-500 outline-none"
                           required={hasVariants}
                         />
                       </div>
+
                       <div className="col-span-1 md:col-span-2 space-y-2 md:space-y-0">
-                        <label className="md:hidden text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                          Discount
+                        <label className="md:hidden text-[11px] font-bold text-amber-600 uppercase tracking-wider">
+                          Promo
                         </label>
                         <select
                           value={item.fakeDiscount}
                           onChange={(e) =>
-                            handleVariantChange(
-                              index,
-                              "fakeDiscount",
-                              e.target.value,
-                            )
+                            handleVariantChange(index, "fakeDiscount", e.target.value)
                           }
-                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer shadow-sm"
+                          className="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-sm font-bold text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none cursor-pointer"
                         >
-                          {DISCOUNT_OPTIONS.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}%
-                            </option>
-                          ))}
+                          <option value="0">No Discount</option>
+                          <option value="10">10% Off</option>
+                          <option value="20">20% Off</option>
+                          <option value="30">30% Off</option>
+                          <option value="40">40% Off</option>
+                          <option value="50">50% Off</option>
                         </select>
                       </div>
-                      <div className="col-span-1 md:col-span-3 space-y-2 md:space-y-0">
+
+                      <div className="col-span-1 md:col-span-2 space-y-2 md:space-y-0">
                         <label className="md:hidden text-[11px] font-bold text-blue-600 uppercase tracking-wider">
                           Customer Pays
                         </label>
                         <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 flex items-center justify-between shadow-sm h-[42px]">
                           <span className="font-black text-blue-800 text-sm">
-                            {item.listingPrice || 0}FCFA
+                            {item.listingPrice || 0} F
                           </span>
-                          {item.fakeMrp && (
-                            <span className="text-[11px] font-bold text-slate-400 line-through">
-                              {item.fakeMrp}FCFA
-                            </span>
-                          )}
                         </div>
                       </div>
+
+                      <div className="col-span-1 md:col-span-2 space-y-2 md:space-y-0">
+                        <label className="md:hidden text-[11px] font-bold text-slate-400 uppercase tracking-wider line-through">
+                          Strike Price
+                        </label>
+                        <div className="bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 flex items-center justify-between shadow-sm h-[42px]">
+                          <span className="font-medium text-slate-500 text-sm line-through">
+                            {item.fakeMrp || 0} F
+                          </span>
+                        </div>
+                      </div>
+
                       <div className="col-span-1 md:col-span-1 flex justify-end">
                         {variants.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeVariant(index)}
-                            className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors mt-2 md:mt-0"
+                            className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors mb-[2px]"
                           >
                             <Trash2 size={20} />
                           </button>

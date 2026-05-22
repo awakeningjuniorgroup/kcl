@@ -71,7 +71,7 @@ const SystemSettings = () => {
               </label>
               <input
                 type="number"
-                step="0.1"
+                step="0"
                 value={settings.platformFeePercent}
                 onChange={(e) =>
                   setSettings({
