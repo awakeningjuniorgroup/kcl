@@ -50,10 +50,11 @@ const AddProduct = () => {
   const UNIT_TYPES = {
     Weight: ["gm", "kg"],
     Volume: ["ml", "L"],
-    Count: ["Piece", "Paquet", "boite", "lot", "Pieces", "sachet"],
+    Count: ["Piece", "Paquet", "boite", "lot", "Pieces", "sachet", "appariel"],
     area: ["m²", "cm²"],
     puissance: ["w", "kw"],
     longueur: ["m", "cm"],
+    capcite: ["mAh", "Ah"],
   };
 
   // --- POUR PRODUIT UNIQUE ---
@@ -474,6 +475,11 @@ const AddProduct = () => {
                       <option value="30">30% Off</option>
                       <option value="40">40% Off</option>
                       <option value="50">50% Off</option>
+                       <option value="60">60% Off</option>
+                      <option value="70">70% Off</option>
+                      <option value="80">80% Off</option>
+                      <option value="90">90% Off</option>
+                      
                     </select>
                   </div>
 
