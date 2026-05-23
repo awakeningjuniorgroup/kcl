@@ -58,13 +58,14 @@ const EditProduct = () => {
   const PLATFORM_FEE_PERCENT = systemSettings?.platformFeePercent || 5;
   const DISCOUNT_OPTIONS = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70];
 
-  const UNIT_TYPES = {
+ const UNIT_TYPES = {
     Weight: ["gm", "kg"],
     Volume: ["ml", "L"],
-    Count: ["Piece", "Paquet", "boite", "lot", "sachet"],
+    Count: ["Piece", "Paquet", "boite", "lot", "Pieces", "sachet", "appariel"],
     area: ["m²", "cm²"],
     puissance: ["w", "kw"],
     longueur: ["m", "cm"],
+    capcite: ["mAh", "Ah"],
   };
 
   const [netIncome, setNetIncome] = useState("");
