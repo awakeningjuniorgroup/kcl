@@ -48,7 +48,9 @@ const NewArrivals = () => {
           viewport={{ once: true }}
           className="text-4xl md:text-5xl font-black text-gray-900 mb-4"
         >
-          Dernière Ajout
+          Nouvelle arrivage
+        
+          
         </motion.h2>
         
         <motion.p 

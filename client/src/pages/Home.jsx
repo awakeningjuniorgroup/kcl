@@ -26,26 +26,27 @@ const Home = () => {
     >
       {/* Animated Background */}
       {/* <KiteBackground /> */}
-      {/* Flash Sale Banner */}
-        <FlashSale />
+
+      
 
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
         <HeroSlider />
+
+        {/* Flash Sale Banner */}
+        <FlashSale />
         
         {/* Categories Section */}
         <div className="mt-10">
           <Categories />
         </div>
 
-        
+        {/* New Arrivals */}
+        <NewArrivals />
 
         {/* Best Sellers */}
         <BestSeller />
-
-        {/* New Arrivals */}
-        <NewArrivals />
 
         {/* Stats Section */}
 
