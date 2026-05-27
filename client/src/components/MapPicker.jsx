@@ -4,7 +4,6 @@ import {
   useJsApiLoader,
   Marker,
   Autocomplete,
-  Polygon,
 } from "@react-google-maps/api";
 import { MapPin, Search } from "lucide-react";
 import toast from "react-hot-toast";
@@ -17,26 +16,8 @@ const containerStyle = {
   height: "100%",
 };
 
-// 📍 Mandvi Center Coordinates
-const defaultCenter = { lat: 21.2514, lng: 73.301 };
-
-// 🛑 1. Define the limits (Bounding Box) for Mandvi.
-// This prevents users from panning the map to Rupan, Lhedpur, etc.
-const MANDVI_BOUNDS = {
-  north: 21.285, // Top edge
-  south: 21.215, // Bottom edge
-  east: 73.345, // Right edge
-  west: 73.265, // Left edge
-};
-
-// 🛑 2. Define the exact red line polygon.
-// These coordinates draw a red box tracking the bounds above.
-const mandviPolygonCoords = [
-  { lat: 21.285, lng: 73.265 }, // Top-Left
-  { lat: 21.285, lng: 73.345 }, // Top-Right
-  { lat: 21.215, lng: 73.345 }, // Bottom-Right
-  { lat: 21.215, lng: 73.265 }, // Bottom-Left
-];
+// 📍 Default center for the delivery area in Cameroon.
+const defaultCenter = { lat: 5.468, lng: 10.417 };
 
 const MapPicker = ({ onSelect, defaultAddress }) => {
   // Initialize Google Maps API
@@ -69,60 +50,43 @@ const MapPicker = ({ onSelect, defaultAddress }) => {
     setMap(null);
   }, []);
 
-  // Reverse Geocode the selected coordinates
+  // Reverse geocode using OpenStreetMap to avoid Google Geocoding API denial.
   const fetchAddressDetails = async (lat, lng) => {
     try {
-      const geocoder = new window.google.maps.Geocoder();
-      const response = await geocoder.geocode({ location: { lat, lng } });
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&addressdetails=1&zoom=18&accept-language=fr`,
+      );
 
-      if (response.results[0]) {
-        const addressComponents = response.results[0].address_components;
-        const formattedAddress = response.results[0].formatted_address;
-
-        let details = {
-          street: "",
-          suburb: "",
-          city: "",
-          state: "",
-          zipcode: "",
-        };
-
-        addressComponents.forEach((comp) => {
-          const types = comp.types;
-          if (
-            types.includes("route") ||
-            types.includes("street_number") ||
-            types.includes("premise")
-          ) {
-            details.street += comp.long_name + " ";
-          }
-          if (types.includes("sublocality") || types.includes("neighborhood")) {
-            details.suburb = comp.long_name;
-          }
-          if (
-            types.includes("locality") ||
-            types.includes("administrative_area_level_2")
-          ) {
-            details.city = comp.long_name;
-          }
-          if (types.includes("administrative_area_level_1")) {
-            details.state = comp.long_name;
-          }
-          if (types.includes("postal_code")) {
-            details.zipcode = comp.long_name;
-          }
-        });
-
-        if (!details.street.trim()) {
-          details.street = response.results[0].address_components[0].long_name;
-        }
-
-        setCurrentAddress(formattedAddress);
-        setParsedDetails(details);
+      if (!response.ok) {
+        throw new Error("OSM reverse geocoding request failed");
       }
+
+      const data = await response.json();
+      const address = data?.address || {};
+      const street = [address.house_number, address.road]
+        .filter(Boolean)
+        .join(" ");
+
+      const details = {
+        street: street || address.suburb || address.neighbourhood || "",
+        suburb: address.suburb || address.neighbourhood || "",
+        city:
+          address.city ||
+          address.town ||
+          address.village ||
+          address.county ||
+          "",
+        state: address.state || address.region || "",
+        zipcode: address.postcode || "",
+      };
+
+      setCurrentAddress(data.display_name || "Adresse détectée");
+      setParsedDetails(details);
     } catch (error) {
       console.error("Geocoding error", error);
-      toast.error("Impossible de lire les détails précis de l'adresse.");
+      toast.error(
+        "Impossible de récupérer les détails précis de l'adresse. Vous pouvez continuer sans validation automatique.",
+      );
     }
   };
 
@@ -155,16 +119,6 @@ const MapPicker = ({ onSelect, defaultAddress }) => {
       );
     }
 
-    // 🛑 STRICT VALIDATION: Reject any submission outside Mandvi 394160
-    const isMandviZip = parsedDetails.zipcode === "394160";
-    const isMandviCity = parsedDetails.city.toLowerCase().includes("mandvi");
-
-    if (!isMandviZip && !isMandviCity) {
-      return toast.error(
-        "Le service est limité à Mandvi (394160). Veuillez sélectionner un lieu valide à l'intérieur de la bordure rouge.",
-      );
-    }
-
     onSelect({
       ...parsedDetails,
       lat: markerPosition.lat,
@@ -194,9 +148,7 @@ const MapPicker = ({ onSelect, defaultAddress }) => {
           onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
           onPlaceChanged={handlePlaceChanged}
           options={{
-            bounds: MANDVI_BOUNDS, // Force searches to happen only within Mandvi limits
-            strictBounds: true,
-            componentRestrictions: { country: "in" },
+            componentRestrictions: { country: "cm" },
           }}
         >
           <div className="relative shadow-lg rounded-xl overflow-hidden bg-white/95 backdrop-blur-md border border-gray-200 focus-within:border-indigo-500 transition-colors">
@@ -205,7 +157,7 @@ const MapPicker = ({ onSelect, defaultAddress }) => {
             </div>
             <input
               type="text"
-              placeholder="Chercher une zone à Mandvi..."
+              placeholder="Rechercher un lieu..."
               className="w-full py-3.5 pl-11 pr-4 text-sm font-bold text-gray-800 bg-transparent outline-none placeholder:font-medium placeholder:text-gray-400"
             />
           </div>
@@ -224,25 +176,8 @@ const MapPicker = ({ onSelect, defaultAddress }) => {
           options={{
             disableDefaultUI: true,
             zoomControl: true,
-            restriction: {
-              latLngBounds: MANDVI_BOUNDS, // Physically prevents user from swiping out of Mandvi
-              strictBounds: true,
-            },
           }}
         >
-          {/* 🛑 THE RED TOWN BORDER */}
-          <Polygon
-            paths={mandviPolygonCoords}
-            options={{
-              fillColor: "#FF0000",
-              fillOpacity: 0.05,
-              strokeColor: "#FF0000",
-              strokeOpacity: 0.8,
-              strokeWeight: 3,
-              clickable: false, // Prevents polygon from blocking clicks on the map
-            }}
-          />
-
           <Marker
             position={markerPosition}
             draggable={true}

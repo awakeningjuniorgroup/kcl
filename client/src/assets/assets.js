@@ -178,6 +178,7 @@ export const footerLinks = [
       { text: "Twitter", url: "#" },
       { text: "Facebook", url: "#" },
       { text: "YouTube", url: "#" },
+      { text: "tikTok", url: "#" },
     ],
   },
 ];

@@ -54,6 +54,46 @@ export const checkMaintenance = async (req, res, next) => {
 // ==========================================
 // 2. PROTECT (Authentication & Security Shield)
 // ==========================================
+export const protectOptional = async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.headers.token) {
+    token = req.headers.token;
+  }
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'User associated with this token no longer exists.' });
+    }
+
+    if (user.isBlocked) {
+      return res.status(403).json({ success: false, message: 'Your account has been suspended. Access revoked.' });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({ success: false, message: 'Account not verified. Please complete OTP verification.' });
+    }
+
+    req.user = user;
+    req.userId = user._id;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, message: 'Session expired. Please log in again.', expired: true });
+    }
+    return res.status(401).json({ success: false, message: 'Invalid token. Authorization denied.' });
+  }
+};
+
 export const protect = async (req, res, next) => {
   let token;
   

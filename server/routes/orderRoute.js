@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect, authorize } from '../middlewares/authRole.js';
+import { protect, protectOptional, authorize } from '../middlewares/authRole.js';
 import { 
     placeOrder, 
     placeOrderMock,
@@ -19,8 +19,8 @@ const orderRouter = express.Router();
 // ==========================================
 
 // Placing Orders
-orderRouter.post('/place', protect, placeOrder);         // COD (Cash on Delivery)
-orderRouter.post('/mock', protect, placeOrderMock);      // Online (Mock Payment)
+orderRouter.post('/place', protectOptional, placeOrder);         // COD (Cash on Delivery)
+orderRouter.post('/mock', protectOptional, placeOrderMock);      // Online (Mock Payment)
 orderRouter.post('/stripe', protect, placeOrderStripe);  // Stripe (Disabled Stub)
 orderRouter.post('/verify', protect, verifyOrder);       // Verify (Disabled Stub)
 

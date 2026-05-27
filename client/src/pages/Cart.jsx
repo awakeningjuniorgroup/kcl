@@ -58,7 +58,6 @@ const Cart = () => {
     setCartItems,
     token,
     addToCart,
-    setShowUserLogin,
     t,
   } = useAppContext();
   const navigate = useNavigate();
@@ -81,15 +80,9 @@ const Cart = () => {
     email: "",
     phone: "",
     street: "",
-    ...SERVICE_AREA,
-  });
-  const [mapAddress, setMapAddress] = useState("");
-  const [mapDetails, setMapDetails] = useState({
-    street: "",
-    suburb: "",
     city: "",
     state: "",
-    zipcode: "",
+    ...SERVICE_AREA,
   });
 
   // 🟢 NEW: Handle Address Form Input
@@ -111,10 +104,12 @@ const Cart = () => {
 
     setFormData((prev) => ({
       ...prev,
-      street: addressData.street || prev.street,
-      ...SERVICE_AREA,
+      street: addressData.street || prev.street || "",
+      city: addressData.city || prev.city || "",
+      state: addressData.state || prev.state || "",
+      zipcode: addressData.zipcode || prev.zipcode || SERVICE_AREA.zipcode,
+      country: SERVICE_AREA.country,
     }));
-    setMapDetails(addressData);
   };
 
   // 🟢 NEW: Get Current Location
@@ -153,11 +148,16 @@ const Cart = () => {
 
             setFormData((prev) => ({
               ...prev,
-              street: fullStreet || prev.street,
-              ...SERVICE_AREA,
+              street: fullStreet || prev.street || "",
+              city: data.address.city || data.address.town || prev.city || "",
+              state:
+                data.address.state || data.address.region || prev.state || "",
+              zipcode:
+                data.address.postcode || prev.zipcode || SERVICE_AREA.zipcode,
+              country: SERVICE_AREA.country,
             }));
           }
-        } catch (error) {
+        } catch {
           toast.error(t.delivery.errorFetchingLocation);
         } finally {
           setIsLoadingLocation(false);
@@ -183,14 +183,53 @@ const Cart = () => {
         );
       }
 
+      if (!user || !token) {
+        const localAddress = {
+          ...formData,
+          _id: `guest-${Date.now()}`,
+        };
+
+        setAddresses([localAddress]);
+        setSelectedAddress(localAddress);
+        setShowAddressForm(false);
+        setEditingAddressId(null);
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          street: "",
+          city: "",
+          state: "",
+          ...SERVICE_AREA,
+        });
+
+        toast.success(
+          "Adresse enregistrée pour cette commande en mode invité.",
+        );
+        return;
+      }
+
       let response;
       if (editingAddressId) {
-        response = await axios.post("/api/address/update", {
-          addressId: editingAddressId,
-          address: formData,
-        });
+        response = await axios.post(
+          "/api/address/update",
+          {
+            addressId: editingAddressId,
+            address: formData,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
       } else {
-        response = await axios.post("/api/address/add", { address: formData });
+        response = await axios.post(
+          "/api/address/add",
+          { address: formData },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
       }
 
       if (response.data.success) {
@@ -221,7 +260,7 @@ const Cart = () => {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
@@ -248,13 +287,21 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const hasToken = localStorage.getItem("token");
-    if (!hasToken && !user) {
-      toast.error(t.cartCheckout.pleaseLoginAccess, { icon: "🔒" });
-      if (setShowUserLogin) setShowUserLogin(true);
-      navigate("/");
+    if (
+      !user &&
+      !localStorage.getItem("token") &&
+      cartItems &&
+      Object.keys(cartItems).length > 0
+    ) {
+      toast.success(
+        "Vous pouvez commander en mode invité. Créez un compte après validation si vous le souhaitez.",
+        {
+          icon: "🛒",
+          duration: 2500,
+        },
+      );
     }
-  }, [user, navigate, setShowUserLogin]);
+  }, [user, cartItems]);
 
   useEffect(() => {
     if (products.length > 0 && cartItems) {
@@ -273,8 +320,12 @@ const Cart = () => {
     }
   }, [products, cartItems]);
 
+  // Track if we're truly switching from logged-in to guest
+  const prevUserRef = React.useRef(user);
+
   useEffect(() => {
     if (user) {
+      prevUserRef.current = user; // Update ref
       const fetchAddress = async () => {
         try {
           const { data } = await axios.get("/api/address/get", {
@@ -289,11 +340,14 @@ const Cart = () => {
         }
       };
       fetchAddress();
-    } else {
+    } else if (prevUserRef.current) {
+      // User just logged out, clear guest addresses
+      prevUserRef.current = null;
       setAddresses([]);
       setSelectedAddress(null);
     }
-  }, [user, axios, token]);
+    // For first-time guests, don't clear anything (stay with default null state)
+  }, [user, token]);
 
   const rawSubtotal = getCartAmount();
   const subtotal = Number(rawSubtotal) || 0;
@@ -310,7 +364,7 @@ const Cart = () => {
     if (totalAmount > 2500000 && paymentMethod === "cod") {
       setPaymentMethod("online");
     }
-  }, [totalAmount]);
+  }, [paymentMethod, totalAmount]);
 
   // 🟢 FIX 1: Explicitly lock in the variant price so the backend gets the correct info!
   const getOrderData = () => {
@@ -342,12 +396,10 @@ const Cart = () => {
   };
 
   const handlePlaceOrderClick = () => {
-    if (!user) {
-      if (setShowUserLogin) setShowUserLogin(true);
-      return toast.error("se connecter pour voir le panier");
-    }
-
-    if (!selectedAddress) return toast.error("ajouter votre adressse");
+    if (!selectedAddress)
+      return toast.error(
+        "Veuillez ajouter une adresse de livraison avant de commander.",
+      );
     if (getCartCount() === 0) return toast.error("panier vide");
     if (totalAmount <= 0 || isNaN(totalAmount))
       return toast.error("Invalid total amount. Please refresh.");
@@ -364,9 +416,7 @@ const Cart = () => {
     }
 
     if (totalAmount > 2500000 && paymentMethod === "cod") {
-      return toast.error(
-        `Orders require Online Payment`,
-      );
+      return toast.error(`Orders require Online Payment`);
     }
 
     if (paymentMethod === "online") {
@@ -381,22 +431,36 @@ const Cart = () => {
       setIsProcessing(true);
 
       const orderData = getOrderData();
+      const requestConfig = token
+        ? { headers: { Authorization: `Bearer ${token}` } }
+        : undefined;
+
       let response;
 
       if (method === "online") {
-        response = await axios.post("/api/order/mock", orderData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        response = await axios.post(
+          "/api/order/mock",
+          orderData,
+          requestConfig,
+        );
       } else {
-        response = await axios.post("/api/order/place", orderData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        response = await axios.post(
+          "/api/order/place",
+          orderData,
+          requestConfig,
+        );
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
         setCartItems({});
-        navigate("/my-orders");
+        localStorage.removeItem("guestCart");
+        navigate("/order-confirmation", {
+          state: {
+            orderId: response.data.orderId || null,
+            guestCheckout: !user,
+          },
+        });
         setIsProcessing(false);
       } else {
         setIsProcessing(false);
@@ -412,8 +476,6 @@ const Cart = () => {
   const getSuggestions = () => {
     return products.filter((p) => !cartItems[p._id]).slice(0, 4);
   };
-
-  if (!user && !localStorage.getItem("token")) return null;
 
   if (getCartCount() === 0) {
     return (
@@ -484,14 +546,12 @@ const Cart = () => {
                   <span className="bg-gray-100 px-2 rounded text-xs">
                     {product.size}
                   </span>{" "}
-                  
                   {price} x {product.quantity}
                   {currency}
                 </p>
               </div>
               <div className="flex flex-col items-end gap-3">
                 <p className="font-bold text-lg">
-                  
                   {price * product.quantity}
                   {currency}
                 </p>
@@ -687,15 +747,14 @@ const Cart = () => {
                         ville
                       </label>
                       <div className="">
-
                         <input
-                            required
-                            onChange={onChangeHandler}
-                            name="city"
-                            value={formData.city}
-                            type="text"
-                            placeholder="ville"
-                            className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold rounded-lg focus:ring-2 focus:ring-green-500 focus:bg-white outline-none p-3 transition-all"
+                          required
+                          onChange={onChangeHandler}
+                          name="city"
+                          value={formData.city}
+                          type="text"
+                          placeholder="ville"
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold rounded-lg focus:ring-2 focus:ring-green-500 focus:bg-white outline-none p-3 transition-all"
                         />
                       </div>
                     </div>
@@ -704,14 +763,14 @@ const Cart = () => {
                         region
                       </label>
                       <input
-                            required
-                            onChange={onChangeHandler}
-                            name="state"
-                            value={formData.state}
-                            type="text"
-                            placeholder="region"
-                            className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold rounded-lg focus:ring-2 focus:ring-green-500 focus:bg-white outline-none p-3 transition-all"
-                        />
+                        required
+                        onChange={onChangeHandler}
+                        name="state"
+                        value={formData.state}
+                        type="text"
+                        placeholder="region"
+                        className="w-full bg-gray-50 border border-gray-200 text-gray-800 font-bold rounded-lg focus:ring-2 focus:ring-green-500 focus:bg-white outline-none p-3 transition-all"
+                      />
                     </div>
                   </div>
 
@@ -798,6 +857,16 @@ const Cart = () => {
               </div>
             ))}
           </div>
+
+          {/* Add New Address Button */}
+          {addresses.length > 0 && !showAddressForm && (
+            <button
+              onClick={() => setShowAddressForm(true)}
+              className="w-full mt-4 py-3 border-2 border-dashed border-green-400 text-green-600 font-bold rounded-lg hover:bg-green-50 transition-all flex items-center justify-center gap-2"
+            >
+              <Plus size={18} /> Ajouter une nouvelle adresse
+            </button>
+          )}
         </div>
       </div>
 
@@ -811,8 +880,8 @@ const Cart = () => {
               <div>
                 <p className="font-bold text-sm">Déjà ici!</p>
                 <p className="text-xs font-medium opacity-90">
-                  Ajouter 
-                  {amountShort} {currency} plus pour atteindre 
+                  Ajouter
+                  {amountShort} {currency} plus pour atteindre
                   {MIN_ORDER_AMOUNT} {currency} minimum de commande.
                 </p>
               </div>
@@ -903,8 +972,8 @@ const Cart = () => {
                 </span>
               </div>
               <span className="text-3xl font-black text-[#4A76AC] tracking-tight">
-                
-                {totalAmount.toFixed(2)}{currency}
+                {totalAmount.toFixed(2)}
+                {currency}
               </span>
             </div>
 
@@ -941,7 +1010,8 @@ const Cart = () => {
                   </span>
                   {isCodDisabled && (
                     <span className="text-[10px] font-bold text-red-500 flex items-center gap-1">
-                      <AlertCircle size={10} /> non disponible pour le montant de cette commande
+                      <AlertCircle size={10} /> non disponible pour le montant
+                      de cette commande
                     </span>
                   )}
                 </div>
@@ -970,9 +1040,8 @@ const Cart = () => {
             onClick={handlePlaceOrderClick}
             disabled={
               isProcessing ||
-              (user &&
-                (totalAmount < MIN_ORDER_AMOUNT ||
-                  totalAmount > MAX_ORDER_AMOUNT))
+              totalAmount < MIN_ORDER_AMOUNT ||
+              totalAmount > MAX_ORDER_AMOUNT
             }
             className={`w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:transform-none disabled:cursor-not-allowed ${paymentMethod === "online" ? "bg-blue-600 hover:bg-blue-700 shadow-blue-200" : "bg-[#4A76AC] hover:bg-[#3A669C] shadow-[#4A76AC]/30"}`}
           >
@@ -984,6 +1053,11 @@ const Cart = () => {
                   ? "PAY NOW"
                   : "PLACE ORDER"}
           </button>
+
+          <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/80 p-3 text-xs text-emerald-800">
+            Vous pouvez commander en mode invité. Un compte peut être créé après
+            confirmation pour suivre votre colis.
+          </div>
 
           <div className="grid grid-cols-3 gap-2 mt-6">
             <div className="flex flex-col items-center justify-center text-center p-3 border border-slate-100 rounded-xl bg-gray-50/80">

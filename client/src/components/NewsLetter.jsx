@@ -16,10 +16,10 @@ const NewsLetter = () => {
     return (
         <div className="flex flex-col items-center justify-center text-center space-y-4 mt-24 pb-14 px-4 font-outfit">
             <h1 className="md:text-4xl text-3xl font-black text-slate-900 tracking-tight">
-                Ne jamais rater k'offre!
+                Ne jamais rater l'offre!
             </h1>
             <p className="md:text-lg text-slate-500 font-medium pb-4 max-w-xl">
-                Avoir les dernierre offre, exclusive Mandvi Cart discounts delivered straight to your inbox.
+                Avoir les dernières offres, exclusives de kcl, et des conseils d'achat directement dans votre boîte de réception.
             </p>
             
             <form onSubmit={handleSubmit} className="relative max-w-xl w-full h-14">
@@ -29,7 +29,7 @@ const NewsLetter = () => {
                 <input
                     className="block w-full h-full pl-14 pr-6 bg-white border border-slate-200 rounded-full text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-medium placeholder:text-slate-400"
                     type="email"
-                    placeholder="Enter your email address and press Enter..."
+                    placeholder="Entrer votre email adresse et appuyer sur souscrire"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

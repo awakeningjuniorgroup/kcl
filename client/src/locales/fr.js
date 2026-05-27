@@ -392,19 +392,19 @@ export const fr = {
 
   // Delivery & Location
   delivery: {
-    onlyDeliverMandvi: "Nous ne livrons actuellement que dans Mandvi (394160).",
+    onlyDeliverMandvi: "Nous ne livrons actuellement que dans la zone de livraison autorisée.",
     locationUpdatedSuccessfully: "Lieu mis à jour avec succès!",
     geolocationNotSupported: "Géolocalisation non prise en charge par votre navigateur",
     currentLocationDetected: "Localisation exacte détectée!",
-    detectedLocationOutside: "La localisation détectée est en dehors de notre zone de livraison Mandvi (394160).",
+    detectedLocationOutside: "La localisation détectée est en dehors de notre zone de livraison autorisée.",
     errorFetchingLocation: "Erreur lors de la récupération des détails de localisation",
     allowLocationAccess: "Veuillez autoriser l'accès à la localisation dans votre navigateur.",
     deliveryRestrictedTo: "La livraison est limitée à {{zipcode}} uniquement.",
     selectLocationFirst: "Veuillez déposer une épingle ou rechercher un lieu en premier.",
-    serviceRestrictedMandvi: "Le service est limité à Mandvi (394160). Veuillez sélectionner un lieu valide à l'intérieur de la bordure rouge.",
+    serviceRestrictedMandvi: "Le service est limité à la zone de livraison autorisée. Veuillez sélectionner un lieu valide.",
     errorLoadingMaps: "Erreur lors du chargement des cartes. Vérifiez la clé API.",
     initializingMapEngine: "Initialisation du moteur de cartes...",
-    searchAreaMandvi: "Chercher une zone à Mandvi...",
+    searchAreaMandvi: "Rechercher un lieu...",
     streetDeliveryUpdated: "Rue de livraison mise à jour avec succès!",
     addressOutsideArea: "Votre adresse est en dehors de la zone.",
     exactZoneFound: "Zone exacte trouvée!",

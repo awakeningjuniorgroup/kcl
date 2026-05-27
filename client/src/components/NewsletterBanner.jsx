@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, CheckCircle, Sparkles } from 'lucide-react';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, CheckCircle, Sparkles } from "lucide-react";
 
 const NewsletterBanner = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ const NewsletterBanner = () => {
     // Simulate API call
     setTimeout(() => {
       setSubmitted(true);
-      setEmail('');
+      setEmail("");
       setLoading(false);
       setTimeout(() => setSubmitted(false), 3000);
     }, 1000);
@@ -23,13 +23,21 @@ const NewsletterBanner = () => {
 
   return (
     <section className="mx-4 md:mx-16 lg:mx-32 my-24">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
         className="relative bg-gradient-to-r from-[#4A76AC] via-blue-500 to-[#3d618c]nrounded-3xl p-12 md:p-20 overflow-hidden"
       >
+        <motion.h2
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight"
+        >
+          Infos par mail
+        </motion.h2>
         {/* Animated Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-32 -mb-32" />
@@ -45,29 +53,30 @@ const NewsletterBanner = () => {
           </motion.div>
 
           {/* Heading */}
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight"
           >
-            Avoir les dernierre offre!
+            Nos dernierre offres!
           </motion.h2>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
             className="text-white/90 text-lg mb-8 max-w-xl mx-auto"
           >
-            Souscrire à notre newsletter et recevoir des offres exclusives, des mises à jour sur les produits frais et des promotions saisonnières directement dans votre boîte de réception.
-            
+            Souscrire à notre newsletter et recevoir des offres exclusives, des
+            mises à jour sur les produits frais et des promotions saisonnières
+            directement dans votre boîte de réception.
           </motion.p>
 
           {/* Form */}
-          <motion.form 
+          <motion.form
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -76,7 +85,10 @@ const NewsletterBanner = () => {
             className="flex flex-col sm:flex-row gap-3 mb-4"
           >
             <div className="flex-1 relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 z-10" size={20} />
+              <Mail
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 z-10"
+                size={20}
+              />
               <input
                 type="email"
                 placeholder="Entrez votre email"
@@ -96,23 +108,24 @@ const NewsletterBanner = () => {
                 <div className="w-5 h-5 border-2 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
               ) : submitted ? (
                 <>
-                  <CheckCircle size={20} /> Done!
+                  <CheckCircle size={20} /> effectué!
                 </>
               ) : (
-                'Subscribe'
+                "Souscrire"
               )}
             </motion.button>
           </motion.form>
 
           {/* Success Message */}
           {submitted && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="text-white/80 text-sm"
             >
-              ✅ Souscription réussie! Vérifiez votre boîte de réception pour une offre de bienvenue spéciale.
+              ✅ Souscription réussie! Vérifiez votre boîte de réception pour
+              une offre de bienvenue spéciale.
             </motion.p>
           )}
         </div>

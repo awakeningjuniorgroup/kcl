@@ -53,7 +53,7 @@ const geocodeAddress = async (addrObj) => {
 // ==========================================
 const placeOrderMain = async (req, res, paymentMethod, paymentStatus) => {
     try {
-        const userId = req.userId;
+        const userId = req.userId || `guest-${Date.now()}`;
         const { items, address, amount: frontendAmount } = req.body;
 
         if (!items || items.length === 0) {
@@ -148,10 +148,16 @@ const placeOrderMain = async (req, res, paymentMethod, paymentStatus) => {
 
         const newOrder = new orderModel(orderData);
         await newOrder.save();
-        
-        await userModel.findByIdAndUpdate(userId, { cartItems: {} });
 
-        return res.json({ success: true, message: "Order Placed Successfully" });
+        if (req.userId) {
+            await userModel.findByIdAndUpdate(req.userId, { cartItems: {} });
+        }
+
+        return res.json({
+            success: true,
+            message: "Order Placed Successfully",
+            orderId: newOrder._id,
+        });
 
     } catch (error) {
         console.log(error);

@@ -93,7 +93,7 @@ const MockPaymentModal = ({ amount, onClose, onSuccess }) => {
                 <div className="space-y-4 py-4">
                   <div className="p-5 bg-gradient-to-br from-indigo-900 to-purple-900 rounded-xl text-white shadow-lg">
                     <p className="font-mono text-xl tracking-widest mb-4">
-                      4242 4242 4242 4242
+                      
                     </p>
                     <div className="flex justify-between text-[10px] uppercase opacity-70">
                       <span>Card Holder</span>
