@@ -31,6 +31,7 @@ import contentRouter from "./routes/contentRoute.js";
 import cmsRouter from "./routes/cmsRoute.js"; 
 import chatRouter from "./routes/chatRoute.js"; 
 import payoutRouter from "./routes/payoutRoute.js";
+import whatsappTestRouter from "./routes/whatsappTestRoute.js";
 
 // Middleware Imports
 import { checkMaintenance } from "./middlewares/authRole.js"; 
@@ -188,6 +189,7 @@ const initializeServer = async () => {
     app.use("/api/cms", cmsRouter);          
     app.use("/api/chat", chatRouter);        
     app.use("/api/payout", payoutRouter);    
+    app.use("/api/whatsapp-test", whatsappTestRouter);    
 
     // Health check endpoint
     app.get("/", (req, res) => {

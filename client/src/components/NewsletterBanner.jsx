@@ -30,14 +30,7 @@ const NewsletterBanner = () => {
         transition={{ duration: 0.8 }}
         className="relative bg-gradient-to-r from-[#4A76AC] via-blue-500 to-[#3d618c]nrounded-3xl p-12 md:p-20 overflow-hidden"
       >
-        <motion.h2
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight"
-        >
-          Infos par mail
-        </motion.h2>
+        
         {/* Animated Background Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -ml-32 -mb-32" />

@@ -15,6 +15,7 @@
     "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^2.0.4",
     "@clerk/react": "^6.5.0",
+    "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
     "compression": "^1.8.1",

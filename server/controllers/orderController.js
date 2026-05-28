@@ -2,6 +2,8 @@ import orderModel from "../models/orderModel.js";
 import userModel from "../models/User.js";
 import SystemSetting from "../models/SystemSetting.js"; 
 import Product from "../models/Product.js";
+import { sendWhatsAppMessage } from "../configs/whatsapp.js";
+import { formatOrderMessage } from "../utils/orderMessages.js";
 
 // 🔹 HELPER: Generate 4-Digit OTP
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
@@ -148,6 +150,33 @@ const placeOrderMain = async (req, res, paymentMethod, paymentStatus) => {
 
         const newOrder = new orderModel(orderData);
         await newOrder.save();
+
+        // 🟢 SEND WHATSAPP NOTIFICATION TO ADMIN/OWNER
+        try {
+            const user = req.userId ? await userModel.findById(req.userId) : null;
+            const userPhone = user?.phone || address?.phone;
+            
+            // Send to admin/owner number
+            if (process.env.ADMIN_WHATSAPP_NUMBER) {
+                const message = formatOrderMessage(newOrder);
+                await sendWhatsAppMessage({
+                    phone: process.env.ADMIN_WHATSAPP_NUMBER,
+                    message: message,
+                });
+            }
+
+            // Send confirmation to customer if phone available
+            if (userPhone) {
+                const customerMessage = `✅ Votre commande #${newOrder._id.toString().slice(-8).toUpperCase()} a été reçue!\n\n💰 Total: FCFA ${newOrder.amount.toLocaleString()}\n\nVous recevrez une notification quand elle sera en route.`;
+                await sendWhatsAppMessage({
+                    phone: userPhone,
+                    message: customerMessage,
+                });
+            }
+        } catch (error) {
+            console.warn("⚠️ WhatsApp notification failed:", error.message);
+            // Don't fail the order if WhatsApp fails
+        }
 
         if (req.userId) {
             await userModel.findByIdAndUpdate(req.userId, { cartItems: {} });
